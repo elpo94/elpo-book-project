@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:animations/animations.dart';
 
 import '../views/home/home.dart';
-import '../views/home/timer_detail.dart';
+import '../views/home/widget/timer_detail.dart';
 import '../views/project.dart';
 import '../views/schedule.dart';
 import '../views/setting.dart';
