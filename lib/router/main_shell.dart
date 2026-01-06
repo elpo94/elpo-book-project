@@ -1,55 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:animations/animations.dart';
 
 class MainShell extends StatelessWidget {
   final Widget child;
   const MainShell({super.key, required this.child});
 
-  static const tabs = [
-    '/home',
-    '/project',
-    '/schedule',
-    '/setting',
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final String location = GoRouterState.of(context).uri.toString();
-
-    int currentIndex = tabs.indexWhere((path) => location.startsWith(path));
-    if (currentIndex == -1) currentIndex = 0;
+    final location = GoRouterState.of(context).uri.toString();
 
     return Scaffold(
       body: child,
 
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: (index) {
-          context.go(tabs[index]);
-        },
-
-        type: BottomNavigationBarType.fixed,
-
+        currentIndex: _index(location),
+        onTap: (i) => _onTap(i, context),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: '홈',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: 'Project',
+            label: '프로젝트',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.schedule),
-            label: 'Schedule',
+            icon: Icon(Icons.list),
+            label: '일정',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'Setting',
+            label: '설정',
           ),
         ],
       ),
     );
+  }
+
+  int _index(String uri) {
+    if (uri.startsWith('/project')) return 1;
+    if (uri.startsWith('/schedule')) return 2;
+    if (uri.startsWith('/setting')) return 3;
+    return 0;
+  }
+
+  void _onTap(int i, BuildContext context) {
+    switch (i) {
+      case 0:
+        context.go('/home');
+        break;
+      case 1:
+        context.go('/project');
+        break;
+      case 2:
+        context.go('/schedule');
+        break;
+      case 3:
+        context.go('/setting');
+        break;
+    }
   }
 }

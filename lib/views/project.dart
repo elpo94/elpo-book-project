@@ -5,6 +5,6 @@ class ProjectView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('Project'));
+    return const Center(child: Text("프로젝트 페이지"));
   }
 }

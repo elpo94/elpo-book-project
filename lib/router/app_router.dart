@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:animations/animations.dart';
 
-import '../views/home.dart';
+import '../views/home/home.dart';
+import '../views/home/timer_detail.dart';
 import '../views/project.dart';
 import '../views/schedule.dart';
 import '../views/setting.dart';
@@ -46,6 +47,10 @@ final GoRouter appRouter = GoRouter(
           path: '/setting',
           name: 'setting',
           builder: (context, state) => const SettingView(),
+        ),
+        GoRoute(
+          path: '/timer',
+          builder: (context, state) => const TimerDetailView(),
         ),
       ],
     ),
