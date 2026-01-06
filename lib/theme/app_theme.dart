@@ -29,82 +29,89 @@ final lightColorScheme = ColorScheme(
 final ThemeData appTheme = ThemeData(
   useMaterial3: true,
   colorScheme: lightColorScheme,
-
-  // ⭐ 기본 폰트
   fontFamily: 'Pretendard',
 
-  scaffoldBackgroundColor: lightColorScheme.surface,
+  scaffoldBackgroundColor: AppColors.background,
 
-  appBarTheme: AppBarTheme(
-    backgroundColor: lightColorScheme.surface,
-    foregroundColor: lightColorScheme.onSurface,
+  appBarTheme: const AppBarTheme(
+    backgroundColor: AppColors.background,
+    foregroundColor: AppColors.foreground,
     elevation: 0,
-  ),
-
-  bottomNavigationBarTheme: BottomNavigationBarThemeData(
-    backgroundColor: lightColorScheme.surface,
-    selectedItemColor: lightColorScheme.primary,
-    unselectedItemColor: lightColorScheme.onSurfaceVariant,
-  ),
-
-
-  cardTheme: CardThemeData(
-    color: lightColorScheme.surface,
-    surfaceTintColor: Colors.transparent,
-    elevation: 1,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-  ),
-
-  textTheme: const TextTheme(
-    bodyMedium: TextStyle(),
-    bodyLarge: TextStyle(),
-    titleLarge: TextStyle(fontFamily: 'AritaBuri', fontWeight: FontWeight.w600),
-
-  ),
-  filledButtonTheme: FilledButtonThemeData(
-    style: FilledButton.styleFrom(
-      backgroundColor: AppColors.primary,
-      foregroundColor: AppColors.primaryOn,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 12),
+    centerTitle: true,
+    titleTextStyle: TextStyle(
+      fontFamily: 'AritaBuri',
+      fontWeight: FontWeight.w600,
+      fontSize: 18,
+      color: AppColors.foreground,
     ),
   ),
+
+  cardTheme: CardThemeData(
+    color: AppColors.surface,
+    surfaceTintColor: Colors.transparent,
+    elevation: 1,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16),
+    ),
+  ),
+
+  filledButtonTheme: FilledButtonThemeData(
+    style: FilledButton.styleFrom(
+      backgroundColor: const Color(0xFFB58A53),  // 피그마색
+      foregroundColor: const Color(0xFF3A2B1A),  // 글씨
+      padding: const EdgeInsets.symmetric(
+        horizontal: 22,
+        vertical: 12,
+      ),
+      minimumSize: const Size(0, 48),          // 버튼 높이 고정
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+      ),
+      textStyle: const TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 14,
+      ),
+    ),
+  ),
+
+
 
   outlinedButtonTheme: OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
-      side: BorderSide(color: AppColors.border),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+      foregroundColor: const Color(0xFF3A2B1A),
+      side: const BorderSide(color: Color(0xFFB58A53)),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 22,
+        vertical: 12,
       ),
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      minimumSize: const Size(0, 48),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+      ),
+      textStyle: const TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 14,
+      ),
     ),
   ),
+
+
+  progressIndicatorTheme: const ProgressIndicatorThemeData(
+    color: AppColors.primary,
+    linearTrackColor: AppColors.secondary,
+  ),
+
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
     fillColor: AppColors.inputBackground,
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: AppColors.border),
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(color: AppColors.border),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: AppColors.border),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: AppColors.primary),
-    ),
-  ),
-  chipTheme: ChipThemeData(
-    selectedColor: AppColors.primary,
-    backgroundColor: Colors.white,
-    labelStyle: const TextStyle(
-      fontWeight: FontWeight.w500,
-    ),
-    shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(color: AppColors.border),
     ),
   ),
 );
+
