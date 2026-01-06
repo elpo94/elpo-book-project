@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class TodayPlanCard extends StatelessWidget {
   const TodayPlanCard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // 임시 더미 값 (나중에 ViewModel에서 받아오면 됨)
+    const String goalTitle = "소설 루트 프로토콜 세계관 설정";
+    const double progress = 0.45; // 45%
+
     return Card(
       elevation: 1,
       shape: RoundedRectangleBorder(
@@ -15,28 +20,63 @@ class TodayPlanCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            /// 상단: 제목 + 수정 버튼
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text(
+              children: [
+                const Text(
                   "오늘 목표",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                Icon(Icons.edit, size: 20),
+                IconButton(
+                  onPressed: () => context.push('/home/edit-plan'),
+                  icon: const Icon(Icons.edit),
+                ),
               ],
             ),
 
             const SizedBox(height: 8),
 
-            const Text("오늘 3시간 글쓰기"),
+            /// 목표 문구
+            Text(
+              "목표 : $goalTitle",
+              style: const TextStyle(fontSize: 14),
+            ),
 
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
 
-            const Text("이전 목표 횟수: 5회   진행: 3/5"),
+            /// 퍼센트 줄 (아래로 내린 부분)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "진행률",
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                Text(
+                  "${(progress * 100).round()}%",
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
 
             const SizedBox(height: 8),
 
-            const LinearProgressIndicator(value: 0.6),
+            /// 진행 바
+            LinearProgressIndicator(
+              value: progress,
+              minHeight: 6,
+              borderRadius: BorderRadius.circular(999),
+            ),
+
+            const SizedBox(height: 12),
+
           ],
         ),
       ),
