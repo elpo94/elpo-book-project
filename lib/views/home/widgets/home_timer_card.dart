@@ -1,3 +1,4 @@
+import 'package:elpo_book_project/views/home/dialog/reset_dialog.dart';
 import 'package:flutter/material.dart';
 
 class HomeTimerCard extends StatelessWidget {
@@ -37,7 +38,12 @@ class HomeTimerCard extends StatelessWidget {
                 const SizedBox(width: 12),
 
                 OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) => const ResetTimerDialog(),
+                    );
+                  },
                   child: const Text("Reset"),
                 ),
               ],

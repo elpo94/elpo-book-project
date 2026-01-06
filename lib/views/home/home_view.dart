@@ -1,6 +1,6 @@
-import 'package:elpo_book_project/views/home/widget/home_timer_card.dart';
-import 'package:elpo_book_project/views/home/widget/memo_card.dart';
-import 'package:elpo_book_project/views/home/widget/today_plan_card.dart';
+import 'package:elpo_book_project/views/home/widgets/home_timer_card.dart';
+import 'package:elpo_book_project/views/home/widgets/memo_card.dart';
+import 'package:elpo_book_project/views/home/widgets/today_plan_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
