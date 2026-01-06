@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class HomeTimerCard extends StatelessWidget {
-  const HomeTimerCard({super.key});
+  final VoidCallback? onTap;
+
+  const HomeTimerCard({super.key,this.onTap});
 
   @override
   Widget build(BuildContext context) {

@@ -34,30 +34,30 @@ class _TimerLandscapeViewState extends State<TimerLandscapeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-
-          /// 타이머 중앙
-          Center(
-            child: Text(
-              "03:45:12",
-              style: const TextStyle(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Center(
+              child: Text(
+                "03:45:12",
+                style: const TextStyle(
+                  fontSize: 90,
+                  letterSpacing: 2,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
 
-          /// 닫기 버튼
-          Positioned(
-            top: 20,
-            right: 20,
-            child: IconButton(
-              icon: const Icon(Icons.close, size: 30),
-              onPressed: () => Navigator.pop(context),
+            Positioned(
+              top: 8,
+              right: 8,
+              child: IconButton(
+                icon: const Icon(Icons.close, size: 28),
+                onPressed: () => Navigator.pop(context),
+              ),
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }

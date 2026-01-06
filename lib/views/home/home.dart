@@ -1,7 +1,8 @@
 import 'package:elpo_book_project/views/home/widget/home_timer_card.dart';
 import 'package:elpo_book_project/views/home/widget/memo_card.dart';
-import 'package:elpo_book_project/views/home/widget/today_goal_card.dart';
+import 'package:elpo_book_project/views/home/widget/today_plan_card.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -13,14 +14,18 @@ class HomeView extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: ListView(
-            children: const [
+            children: [
               SizedBox(height: 12),
 
-              HomeTimerCard(),
+              HomeTimerCard(
+                  onTap: () {
+                    context.push('/timer_landscape');
+                  }
+              ),
 
               SizedBox(height: 20),
 
-              TodayGoalCard(),
+              TodayPlanCard(),
 
               SizedBox(height: 20),
 
