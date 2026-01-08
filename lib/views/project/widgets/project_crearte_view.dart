@@ -21,22 +21,16 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('사부작'),
-      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             /// 프로젝트 이름
             _sectionTitle('프로젝트 이름'),
             TextField(
               controller: titleController,
-              decoration: const InputDecoration(
-                hintText: '예: 소설 1부',
-              ),
+              decoration: const InputDecoration(hintText: '예: 소설 1부'),
             ),
 
             const SizedBox(height: 18),
@@ -46,9 +40,7 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
             TextField(
               controller: descriptionController,
               maxLines: 3,
-              decoration: const InputDecoration(
-                hintText: '프로젝트에 대한 간단한 설명',
-              ),
+              decoration: const InputDecoration(hintText: '프로젝트에 대한 간단한 설명'),
             ),
 
             const SizedBox(height: 18),
@@ -58,9 +50,7 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
             TextField(
               controller: periodController,
               readOnly: true,
-              decoration: const InputDecoration(
-                hintText: '날짜를 선택하세요',
-              ),
+              decoration: const InputDecoration(hintText: '날짜를 선택하세요'),
             ),
 
             const SizedBox(height: 18),
@@ -69,9 +59,7 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
             _sectionTitle('하루 목표'),
             TextField(
               controller: dailyGoalController,
-              decoration: const InputDecoration(
-                hintText: '예: 하루 3시간',
-              ),
+              decoration: const InputDecoration(hintText: '예: 하루 3시간'),
             ),
 
             const SizedBox(height: 18),
@@ -80,9 +68,7 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
             _sectionTitle('주간 빈도'),
             TextField(
               controller: weeklyGoalController,
-              decoration: const InputDecoration(
-                hintText: '예: 주 5일',
-              ),
+              decoration: const InputDecoration(hintText: '예: 주 5일'),
             ),
 
             const SizedBox(height: 18),
@@ -94,7 +80,7 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
               children: List.generate(7, (index) {
                 return Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 1),
                     child: ChoiceChip(
                       label: Text(days[index]),
                       selected: selectedDays[index],
@@ -142,12 +128,7 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
   Widget _sectionTitle(String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+      child: Text(text, style: const TextStyle(fontWeight: FontWeight.w600)),
     );
   }
 }

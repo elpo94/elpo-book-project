@@ -30,7 +30,7 @@ class MainShell extends StatelessWidget {
       floatingActionButton: location.startsWith('/project')
           ? FloatingActionButton(
         onPressed: () {
-          // context.push('/project/edit');
+          context.push('/project/create');
         },
         shape: const CircleBorder(),
         backgroundColor: Theme.of(context).colorScheme.primary, // 노란 배경

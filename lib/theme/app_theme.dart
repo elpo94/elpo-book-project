@@ -25,7 +25,6 @@ final lightColorScheme = ColorScheme(
   surfaceTint: Colors.transparent,
 );
 
-
 final ThemeData appTheme = ThemeData(
   useMaterial3: true,
   colorScheme: lightColorScheme,
@@ -46,56 +45,34 @@ final ThemeData appTheme = ThemeData(
     ),
   ),
 
-
   cardTheme: CardThemeData(
     color: AppColors.surface,
     surfaceTintColor: Colors.transparent,
     elevation: 1,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(16),
-    ),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
   ),
 
   filledButtonTheme: FilledButtonThemeData(
     style: FilledButton.styleFrom(
-      backgroundColor: const Color(0xFFB58A53),  // 피그마색
-      foregroundColor: const Color(0xFF3A2B1A),  // 글씨
-      padding: const EdgeInsets.symmetric(
-        horizontal: 22,
-        vertical: 12,
-      ),
-      minimumSize: const Size(0, 48),          // 버튼 높이 고정
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
-      textStyle: const TextStyle(
-        fontWeight: FontWeight.w600,
-        fontSize: 14,
-      ),
+      backgroundColor: const Color(0xFFB58A53), // 피그마색
+      foregroundColor: const Color(0xFF3A2B1A), // 글씨
+      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+      minimumSize: const Size(0, 48), // 버튼 높이 고정
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
     ),
   ),
-
-
 
   outlinedButtonTheme: OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
       foregroundColor: const Color(0xFF3A2B1A),
       side: const BorderSide(color: Color(0xFFB58A53)),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 22,
-        vertical: 12,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
       minimumSize: const Size(0, 48),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
-      textStyle: const TextStyle(
-        fontWeight: FontWeight.w600,
-        fontSize: 14,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
     ),
   ),
-
 
   progressIndicatorTheme: const ProgressIndicatorThemeData(
     color: AppColors.primary,
@@ -104,30 +81,51 @@ final ThemeData appTheme = ThemeData(
 
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
-    fillColor: AppColors.inputBackground,
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: AppColors.border),
+    fillColor: AppColors.inputBackground, // 피그마 베이지
+
+    hintStyle: TextStyle(
+      color: AppColors.mutedOn, // 안내문구 연한 브라운
+      fontSize: 14,
     ),
+
+    labelStyle: TextStyle(color: AppColors.mutedOn),
+
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14), // 지금 값 유지
+      borderSide: BorderSide(
+        color: AppColors.border, // 기본 테두리
+        width: 1,
+      ),
+    ),
+
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: AppColors.border),
+      borderRadius: BorderRadius.circular(14),
+      borderSide: BorderSide(color: AppColors.border, width: 1),
+    ),
+
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: BorderSide(
+        color: AppColors.primary, // 브라운 포커스
+        width: 1,
+      ),
+    ),
+
+    disabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(14),
+      borderSide: BorderSide(
+        color: AppColors.border.withOpacity(0.6),
+        width: 1,
+      ),
     ),
   ),
+
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     backgroundColor: AppColors.background,
     selectedItemColor: AppColors.foreground, // 브라운
-    unselectedItemColor: AppColors.mutedOn,  // 연한 브라운
-    selectedLabelStyle: TextStyle(
-      fontSize: 12,
-      fontWeight: FontWeight.w500,
-    ),
-    unselectedLabelStyle: TextStyle(
-      fontSize: 12,
-      fontWeight: FontWeight.w400,
-    ),
+    unselectedItemColor: AppColors.mutedOn, // 연한 브라운
+    selectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+    unselectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
     type: BottomNavigationBarType.fixed,
   ),
-
 );
-

@@ -5,7 +5,6 @@ import 'package:elpo_book_project/views/home/widgets/today_plan_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../project/widgets/project_create_preview_card.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -31,9 +30,9 @@ class HomeView extends StatelessWidget {
             child: TodayPlanCard(),
           ),
 
-          const HomeSection(
+          HomeSection(
             title: '프로젝트',
-            child: ProjectCreatePreviewCard(),
+            child: Text('프로젝트 영역 (더미)'),
           ),
 
         ],

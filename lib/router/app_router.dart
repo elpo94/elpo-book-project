@@ -6,6 +6,8 @@ import '../views/home/edit_plan_view.dart';
 import '../views/home/home_view.dart';
 import '../views/home/widgets/timer_detail.dart';
 import '../views/project/project_view.dart';
+import '../views/project/widgets/project_crearte_view.dart';
+import '../views/project/widgets/project_detail_view.dart';
 import '../views/schedule.dart';
 import '../views/setting.dart';
 import 'main_shell.dart';
@@ -67,6 +69,17 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/project/edit',
           builder: (context, state) => const EditPlanView(),
+        ),
+        GoRoute(
+          path: '/project/create',
+          builder: (context, state) => const ProjectCreateView(),
+        ),
+        GoRoute(
+          path: '/project/:id', // id는 더미. 바꿔야 함.
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return ProjectDetailView(projectId: id);
+          },
         ),
 
         //스케줄러
