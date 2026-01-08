@@ -5,7 +5,7 @@ import 'package:animations/animations.dart';
 import '../views/home/edit_plan_view.dart';
 import '../views/home/home_view.dart';
 import '../views/home/widgets/timer_detail.dart';
-import '../views/project/project.dart';
+import '../views/project/project_view.dart';
 import '../views/schedule.dart';
 import '../views/setting.dart';
 import 'main_shell.dart';
@@ -29,6 +29,7 @@ final GoRouter appRouter = GoRouter(
         );
       },
       routes: [
+        //홈
         GoRoute(
           path: '/home',
           name: 'home',
@@ -57,6 +58,21 @@ final GoRouter appRouter = GoRouter(
           path: '/home/edit-plan',
           builder: (_, __) => const EditPlanView(),
         ),
+
+        //프로젝트
+        GoRoute(
+          path: '/project',
+          builder: (context, state) => const ProjectView(),
+        ),
+        GoRoute(
+          path: '/project/edit',
+          builder: (context, state) => const EditPlanView(),
+        ),
+
+        //스케줄러
+
+        //세팅
+
       ],
     ),
   ],
