@@ -43,41 +43,7 @@ class _EditPlanViewState extends State<EditPlanView> {
               ),
             ),
 
-            const SizedBox(height: 18),
-
-            /// 요일 선택
-            const Text(
-              "반복 요일",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-
-            Row(
-              children: List.generate(7, (index) {
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 1),
-                    child: ChoiceChip(
-                      label: Center(child: Text(days[index])),
-                      selected: selected[index],
-                      onSelected: (_) {
-                        setState(() {
-                          selected[index] = !selected[index];
-                        });
-                      },
-                      selectedColor: Theme.of(context).colorScheme.primary,
-                      labelStyle: TextStyle(
-                        color: selected[index]
-                            ? Colors.white
-                            : Colors.black,
-                      ),
-                    ),
-                  ),
-                );
-              }),
-            ),
-
-            const SizedBox(height: 18),
+            const SizedBox(height: 30),
 
             /// 메모
             const Text(

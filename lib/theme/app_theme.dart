@@ -41,10 +41,11 @@ final ThemeData appTheme = ThemeData(
     titleTextStyle: TextStyle(
       fontFamily: 'AritaBuri',
       fontWeight: FontWeight.w600,
-      fontSize: 18,
+      fontSize: 20, // 18 → 20
       color: AppColors.foreground,
     ),
   ),
+
 
   cardTheme: CardThemeData(
     color: AppColors.surface,

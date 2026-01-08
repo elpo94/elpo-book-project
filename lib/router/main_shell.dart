@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../theme/app_colors.dart';
+
 class MainShell extends StatelessWidget {
   final Widget child;
   const MainShell({super.key, required this.child});
@@ -10,11 +12,37 @@ class MainShell extends StatelessWidget {
     final location = GoRouterState.of(context).uri.toString();
 
     return Scaffold(
-      extendBody: true, // 바텀네비 용량줄이기?
+      extendBody: true,
+
       appBar: AppBar(
         title: const Text('사부작'),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            height: 1,
+            color: AppColors.border.withOpacity(0.6),
+          ),
+        ),
       ),
+
       body: child,
+
+      floatingActionButton: location.startsWith('/project')
+          ? FloatingActionButton(
+        onPressed: () {
+          // context.push('/project/edit');
+        },
+        shape: const CircleBorder(),
+        backgroundColor: Theme.of(context).colorScheme.primary, // 노란 배경
+        elevation: 3,
+        child: Icon(
+          Icons.edit,
+          color: AppColors.foreground, // 브라운
+          size: 30,
+        ),
+      )
+          : null,
+
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _index(location),
         onTap: (i) => _onTap(i, context),

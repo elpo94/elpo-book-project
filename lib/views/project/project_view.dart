@@ -7,28 +7,15 @@ class ProjectView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('프로젝트'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              context.push('/project/edit');
-            },
-          ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: const [
-          ProjectCard(),
-          SizedBox(height: 12),
-          ProjectCard(),
-          SizedBox(height: 12),
-          ProjectCard(),
-        ],
-      ),
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: const [
+        ProjectCard(),
+        SizedBox(height: 12),
+        ProjectCard(),
+        SizedBox(height: 12),
+        ProjectCard(),
+      ],
     );
   }
 }
