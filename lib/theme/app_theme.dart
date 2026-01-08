@@ -81,44 +81,49 @@ final ThemeData appTheme = ThemeData(
 
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
-    fillColor: AppColors.inputBackground, // 피그마 베이지
+    fillColor: AppColors.surface, // ← 피그마 베이지 카드색
+
+    contentPadding: const EdgeInsets.symmetric(
+      horizontal: 14,
+      vertical: 14,
+    ),
 
     hintStyle: TextStyle(
       color: AppColors.mutedOn, // 안내문구 연한 브라운
       fontSize: 14,
     ),
 
-    labelStyle: TextStyle(color: AppColors.mutedOn),
-
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(14), // 지금 값 유지
-      borderSide: BorderSide(
-        color: AppColors.border, // 기본 테두리
-        width: 1,
-      ),
+    labelStyle: TextStyle(
+      color: AppColors.mutedOn,
+      fontSize: 13,
     ),
 
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
-      borderSide: BorderSide(color: AppColors.border, width: 1),
+      borderSide: BorderSide(
+        color: AppColors.border, // 연한 베이지 테두리
+        width: 1,
+      ),
     ),
 
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
       borderSide: BorderSide(
-        color: AppColors.primary, // 브라운 포커스
-        width: 1,
+        color: AppColors.primary, // 포커스 시 브라운
+        width: 1.2,
       ),
     ),
 
     disabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(14),
       borderSide: BorderSide(
-        color: AppColors.border.withOpacity(0.6),
+        color: AppColors.border, // disabled도 회색 X
         width: 1,
       ),
     ),
   ),
+
+
 
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     backgroundColor: AppColors.background,
