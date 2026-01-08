@@ -5,7 +5,7 @@ import 'package:animations/animations.dart';
 import '../views/home/edit_plan_view.dart';
 import '../views/home/home_view.dart';
 import '../views/home/widgets/timer_detail.dart';
-import '../views/project.dart';
+import '../views/project/project.dart';
 import '../views/schedule.dart';
 import '../views/setting.dart';
 import 'main_shell.dart';

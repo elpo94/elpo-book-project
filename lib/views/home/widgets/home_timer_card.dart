@@ -39,7 +39,7 @@ class HomeTimerCard extends StatelessWidget {
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (_) => const ResetTimerDialog(),
+                      builder: (_) => const ResetTimerDialog(title: '타이머를 초기화할까요?',),
                     );
                   },
                   child: const Text("Reset"),

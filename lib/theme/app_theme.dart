@@ -113,5 +113,20 @@ final ThemeData appTheme = ThemeData(
       borderSide: const BorderSide(color: AppColors.border),
     ),
   ),
+  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    backgroundColor: AppColors.background,
+    selectedItemColor: AppColors.foreground, // 브라운
+    unselectedItemColor: AppColors.mutedOn,  // 연한 브라운
+    selectedLabelStyle: TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+    ),
+    unselectedLabelStyle: TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.w400,
+    ),
+    type: BottomNavigationBarType.fixed,
+  ),
+
 );
 

@@ -56,7 +56,7 @@ class _EditPlanViewState extends State<EditPlanView> {
               children: List.generate(7, (index) {
                 return Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 1),
                     child: ChoiceChip(
                       label: Center(child: Text(days[index])),
                       selected: selected[index],

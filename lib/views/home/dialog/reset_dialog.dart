@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ResetTimerDialog extends StatelessWidget {
-  const ResetTimerDialog({super.key});
+  final String title;
+  const ResetTimerDialog({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +21,8 @@ class ResetTimerDialog extends StatelessWidget {
 
       contentPadding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
 
-      title: const Text(
-        "타이머를 초기화할까요?",
+      title:  Text(
+        title,
         textAlign: TextAlign.center,
         style: TextStyle(
           fontWeight: FontWeight.bold,

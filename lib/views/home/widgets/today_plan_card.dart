@@ -22,62 +22,31 @@ class TodayPlanCard extends StatelessWidget {
           children: [
             /// 상단: 제목 + 수정 버튼
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  "오늘 목표",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    goalTitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 16, // 여기서만 크기 조절
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () => context.push('/home/edit-plan'),
-                  icon: const Icon(Icons.edit),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 8),
-
-            /// 목표 문구
-            Text(
-              "목표 : $goalTitle",
-              style: const TextStyle(fontSize: 14),
-            ),
-
-            const SizedBox(height: 4),
-
-            /// 퍼센트 줄 (아래로 내린 부분)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "진행률",
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-                Text(
-                  "${(progress * 100).round()}%",
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
+                const SizedBox(width: 8),
+                SizedBox(
+                  width: 40, // 아이콘 영역 고정
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: () => context.push('/home/edit-plan'),
+                    icon: const Icon(Icons.edit, size: 20),
                   ),
                 ),
               ],
-            ),
-
-            const SizedBox(height: 8),
-
-            /// 진행 바
-            LinearProgressIndicator(
-              value: progress,
-              minHeight: 6,
-              borderRadius: BorderRadius.circular(999),
-            ),
-
-            const SizedBox(height: 12),
-
-          ],
+            )
+          ]
         ),
       ),
     );

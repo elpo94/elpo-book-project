@@ -10,8 +10,8 @@ class MainShell extends StatelessWidget {
     final location = GoRouterState.of(context).uri.toString();
 
     return Scaffold(
-      body: child,
-
+      extendBody: true, // 바텀네비 이게 문젠가?
+      body: child, //
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _index(location),
         onTap: (i) => _onTap(i, context),
