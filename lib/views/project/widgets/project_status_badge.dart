@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'project_status.dart';
 
-class StatusChip extends StatelessWidget {
+class ProjectStatusBadge extends StatelessWidget {
   final ProjectStatus status;
-  final color = status.color;
 
-  const StatusChip({super.key, required this.status});
+  const ProjectStatusBadge({super.key, required this.status});
 
   @override
   Widget build(BuildContext context) {

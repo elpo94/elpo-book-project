@@ -91,7 +91,7 @@ class _Header extends StatelessWidget {
             ),
           ),
         ),
-        StatusChip(status: status),
+        ProjectStatusBadge(status: status),
       ],
     );
   }
