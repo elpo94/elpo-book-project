@@ -1,3 +1,5 @@
+import 'package:elpo_book_project/views/project/widgets/project_status.dart';
+import 'package:elpo_book_project/views/project/widgets/project_status_button.dart';
 import 'package:flutter/material.dart';
 
 class ProjectDetailView extends StatelessWidget {
@@ -37,14 +39,17 @@ class ProjectDetailView extends StatelessWidget {
             const SizedBox(height: 10),
 
             Row(
-              children: [
-                _statusButton(context, '시작 전', false),
-                const SizedBox(width: 8),
-                _statusButton(context, '진행 중', true),
-                const SizedBox(width: 8),
-                _statusButton(context, '마감', false),
-              ],
+              children: ProjectStatus.values.map((status) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: ProjectStatusButton(
+                    status: status,
+                    selected: status == ProjectStatus.ongoing, // 더미
+                  ),
+                );
+              }).toList(),
             ),
+
 
             const SizedBox(height: 24),
 
