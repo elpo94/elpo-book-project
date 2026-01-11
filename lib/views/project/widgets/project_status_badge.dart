@@ -3,25 +3,33 @@ import 'project_status.dart';
 
 class ProjectStatusBadge extends StatelessWidget {
   final ProjectStatus status;
+  final DateTime? deadline;
 
-  const ProjectStatusBadge({super.key, required this.status});
+  const ProjectStatusBadge({
+    super.key,
+    required this.status,
+    this.deadline,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final color = status.color;
+    final display = effectiveStatus(
+      status: status,
+      deadline: deadline,
+    );
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: display.backgroundColor, // AppColors tint 사용
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
-        status.label,
+        display.label,
         style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w600,
-          color: color,
+          color: display.color,
         ),
       ),
     );

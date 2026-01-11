@@ -21,12 +21,15 @@ class ProjectStatusSelector extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
-        children: ProjectStatus.values.map((status) {
+        children: ProjectStatus.values.map((s) {
           return Expanded(
-            child: ProjectStatusButton(
-              status: status,
-              selected: status == value,
-              onTap: onChanged == null ? null : () => onChanged!(status),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: ProjectStatusButton(
+                status: s,
+                selected: s == value,
+                onTap: onChanged == null ? null : () => onChanged!(s),
+              ),
             ),
           );
         }).toList(),

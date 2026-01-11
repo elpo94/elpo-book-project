@@ -17,16 +17,20 @@ class ProjectStatusButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = status.color;
 
-    return Expanded(
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          backgroundColor: selected ? color : null,
-          foregroundColor: selected ? Colors.white : color,
-          side: BorderSide(color: color),
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        backgroundColor: selected ? color : null,
+        foregroundColor: selected ? Colors.white : color,
+        side: BorderSide(color: color),
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        minimumSize: const Size.fromHeight(42),
+        textStyle: TextStyle(
+          fontSize: 13,
+          fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
         ),
-        onPressed: onTap,
-        child: Text(status.label),
       ),
+      onPressed: onTap,
+      child: Text(status.label),
     );
   }
 }
