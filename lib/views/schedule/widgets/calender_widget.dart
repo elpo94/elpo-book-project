@@ -179,7 +179,7 @@ class _DayCell extends StatelessWidget {
         child: Text(
           '${day.day}',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
             color: isSelected ? AppColors.calendarSelectedOn : AppColors.foreground,
           ),
