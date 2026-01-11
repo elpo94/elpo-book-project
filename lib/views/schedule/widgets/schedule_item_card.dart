@@ -15,7 +15,7 @@ class ScheduleItemCard extends StatelessWidget {
   Color _dotColor(ProjectStatus status) {
     return switch (status) {
       ProjectStatus.planned => AppColors.statusPlanned,
-      ProjectStatus.inProgress => AppColors.statusOngoing,
+      ProjectStatus.ongoing => AppColors.statusOngoing,
       ProjectStatus.done => AppColors.statusDone,
       ProjectStatus.overdue => AppColors.statusOverdue,
     };
@@ -31,11 +31,11 @@ class ScheduleItemCard extends StatelessWidget {
         onTap: onTap, // 상세 이동은 나중
         borderRadius: BorderRadius.circular(14),
         child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
-            color: AppColors.secondary,
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(14),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           child: Row(
             children: [
               Container(

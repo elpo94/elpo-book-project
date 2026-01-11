@@ -48,4 +48,8 @@ class AppColors {
   static Color statusOngoingBg = const Color(0xFF2D9CDB).withOpacity(0.16);
   static Color statusDoneBg = const Color(0xFF27AE60).withOpacity(0.16);
   static Color statusOverdueBg = const Color(0xFFEB5757).withOpacity(0.16);
+
+  // Calendar
+  static const Color calendarSelected = Color(0xFFB58A53); // 선택일 색상
+  static const Color calendarSelectedOn = AppColors.background; // 선택일 텍스트 컬러
 }

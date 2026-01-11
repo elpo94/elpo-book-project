@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 /// - UI에서는 이 status를 기준으로 점(●) 색/배지 등을 매핑한다.
 enum ProjectStatus {
   planned,     // 예정
-  inProgress,  // 진행
+  ongoing,  // 진행
   done,        // 완료
   overdue,     // 지연
 }
@@ -13,7 +13,7 @@ enum ProjectStatus {
 extension ProjectStatusX on ProjectStatus {
   String get label => switch (this) {
     ProjectStatus.planned => '예정',
-    ProjectStatus.inProgress => '진행중',
+    ProjectStatus.ongoing => '진행중',
     ProjectStatus.done => '완료',
     ProjectStatus.overdue => '지연',
   };

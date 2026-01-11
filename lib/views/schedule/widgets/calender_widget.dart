@@ -26,8 +26,8 @@ class CalendarWidget extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
       child: TableCalendar<CalendarItem>(
+        locale: 'ko_KR',
         firstDay: DateTime.utc(2020, 1, 1),
         lastDay: DateTime.utc(2035, 12, 31),
         focusedDay: vm.focusedDay,
@@ -56,30 +56,27 @@ class CalendarWidget extends StatelessWidget {
           formatButtonVisible: false,
           leftChevronIcon: const Icon(Icons.chevron_left_rounded),
           rightChevronIcon: const Icon(Icons.chevron_right_rounded),
-          titleTextStyle: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w800,
+          titleTextStyle: TextStyle(
+            fontFamily: 'AritaBuri',
+            fontSize: 16, // 기존 14 -> 16
+            fontWeight: FontWeight.w600,
             color: AppColors.foreground,
           ),
         ),
 
         daysOfWeekStyle: const DaysOfWeekStyle(
-          weekdayStyle: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: AppColors.mutedOn,
-          ),
-          weekendStyle: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: AppColors.mutedOn,
-          ),
+          weekdayStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+          weekendStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
         ),
 
         calendarStyle: const CalendarStyle(
           outsideDaysVisible: false,
           cellMargin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+          selectedTextStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+          todayTextStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
         ),
+
+        rowHeight: 50, // 기존보다 조금만
 
         calendarBuilders: CalendarBuilders(
           defaultBuilder: (context, day, focusedDay) {
@@ -117,7 +114,7 @@ class CalendarWidget extends StatelessWidget {
                 .toList();
 
             return Positioned(
-              bottom: 6,
+              bottom: 10,
               left: 0,
               right: 0,
               child: Row(
@@ -146,7 +143,7 @@ class CalendarWidget extends StatelessWidget {
   Color _statusDotColor(ProjectStatus status) {
     return switch (status) {
       ProjectStatus.planned => AppColors.statusPlanned, // 오렌지
-      ProjectStatus.inProgress => AppColors.statusOngoing, // 블루
+      ProjectStatus.ongoing => AppColors.statusOngoing, // 블루
       ProjectStatus.done => AppColors.statusDone, // 그린
       ProjectStatus.overdue => AppColors.statusOverdue, // 레드
     };
@@ -167,26 +164,28 @@ class _DayCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 선택일 배경은 primary가 아니라 status랑 헷갈릴 수 있으니 primary 유지
-    final selectedBg = AppColors.primary;
-    final todayBorder = AppColors.primary.withOpacity(0.55);
+    final selectedBg = AppColors.calendarSelected;
+    final todayBorder = AppColors.calendarSelected.withOpacity(0.55);
 
     return Container(
-      alignment: Alignment.topCenter,
-      padding: const EdgeInsets.only(top: 8),
+      alignment: Alignment.center,
       decoration: BoxDecoration(
         color: isSelected ? selectedBg : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
         border: (!isSelected && isToday) ? Border.all(color: todayBorder) : null,
       ),
-      child: Text(
-        '${day.day}',
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-          color: AppColors.foreground,
+      child: Align(
+        alignment: const Alignment(0, -0.4),
+        child: Text(
+          '${day.day}',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+            color: isSelected ? AppColors.calendarSelectedOn : AppColors.foreground,
+          ),
         ),
       ),
     );
   }
 }
+

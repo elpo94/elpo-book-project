@@ -9,7 +9,7 @@ import '../views/project/project_view.dart';
 import '../views/project/widgets/project_crearte_view.dart';
 import '../views/project/widgets/project_detail_view.dart';
 import '../views/schedule/schedule_view.dart';
-import '../views/setting.dart';
+import '../views/setting/setting_view.dart';
 import 'main_shell.dart';
 
 final GoRouter appRouter = GoRouter(
