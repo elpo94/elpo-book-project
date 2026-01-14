@@ -9,6 +9,19 @@ class TimerViewModel extends ChangeNotifier {
   Timer? _ticker;
 
   bool get hasTarget => targetDuration > Duration.zero;
+  bool get isEditing => _isEditing;
+  bool _isEditing = false;
+
+  void beginEdit() {
+    _isEditing = true;
+    notifyListeners();
+  }
+
+  void endEdit() {
+    _isEditing = false;
+    notifyListeners();
+  }
+
 
   void setTarget(Duration duration) {
     targetDuration = duration;

@@ -11,6 +11,9 @@ class MainShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
 
+    // ✅ 프로젝트 메인에서만 FAB 표시
+    final showProjectFab = location == '/project';
+
     return Scaffold(
       extendBody: true,
 
@@ -27,42 +30,50 @@ class MainShell extends StatelessWidget {
 
       body: child,
 
-      floatingActionButton: location.startsWith('/project')
+      floatingActionButton: showProjectFab
           ? FloatingActionButton(
-        onPressed: () {
-          context.push('/project/create');
-        },
+        onPressed: () => context.push('/project/create'),
         shape: const CircleBorder(),
-        backgroundColor: Theme.of(context).colorScheme.primary, // 노란 배경
+        backgroundColor: Theme.of(context).colorScheme.primary,
         elevation: 3,
         child: Icon(
           Icons.edit,
-          color: AppColors.foreground, // 브라운
+          color: AppColors.foreground,
           size: 30,
         ),
       )
           : null,
 
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: _index(location),
         onTap: (i) => _onTap(i, context),
+
+        // ✅ 선택 강조(색/크기/폰트)
+        selectedItemColor: AppColors.foreground,
+        unselectedItemColor: AppColors.foreground.withOpacity(0.45),
+
+        selectedIconTheme: const IconThemeData(size: 30),
+        unselectedIconTheme: const IconThemeData(size: 24),
+
+        selectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.w800,
+          fontSize: 12,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 11,
+        ),
+
+        // ✅ 터치 영역이 너무 좁아 보이면 추천
+        // (아이콘 커졌을 때 더 안정적)
+        iconSize: 26,
+
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '홈',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: '프로젝트',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: '일정',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: '설정',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: '프로젝트'),
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: '일정'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: '설정'),
         ],
       ),
     );

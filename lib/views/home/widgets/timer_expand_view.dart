@@ -1,4 +1,5 @@
 import 'package:elpo_book_project/view_models/home/timer_vm.dart';
+import 'package:elpo_book_project/views/home/widgets/timer_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -16,24 +17,20 @@ class _TimerExpandViewState extends State<TimerExpandView> {
   void initState() {
     super.initState();
 
-    // ✅ 가로 고정
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
 
-    // ✅ 상태바/네비게이션바 숨김 (유튜브 느낌)
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
   @override
   void dispose() {
-    // ✅ 세로 복구
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
 
-    // ✅ 시스템 UI 복구
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
     super.dispose();
@@ -50,6 +47,7 @@ class _TimerExpandViewState extends State<TimerExpandView> {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<TimerViewModel>();
+
     final display = vm.isRunning
         ? vm.remaining
         : (vm.hasTarget ? vm.remaining : Duration.zero);
@@ -57,10 +55,9 @@ class _TimerExpandViewState extends State<TimerExpandView> {
     return Scaffold(
       backgroundColor: const Color(0xFFF3E8DF),
       body: SafeArea(
-        // SafeArea는 남겨두되, immersive라 상단은 거의 안 보임
         child: Stack(
           children: [
-            // ✅ 중앙 시간
+            // 중앙 시간
             Center(
               child: Text(
                 _format(display),
@@ -72,7 +69,7 @@ class _TimerExpandViewState extends State<TimerExpandView> {
               ),
             ),
 
-            // ✅ 접기(셰브론 다운) - 유튜브처럼 위쪽
+            // 접기
             Positioned(
               top: 6,
               left: 6,
@@ -82,6 +79,22 @@ class _TimerExpandViewState extends State<TimerExpandView> {
                   size: 40,
                 ),
                 onPressed: () => context.pop(),
+              ),
+            ),
+
+            // ✅ 하단 버튼 패널 (공통 위젯 사용)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 12,
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 520),
+                  child: const TimerControls(
+                    compact: false,
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                ),
               ),
             ),
           ],
