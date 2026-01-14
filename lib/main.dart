@@ -1,10 +1,11 @@
-import 'package:elpo_book_project/view_models/schedule_vm.dart';
+import 'package:elpo_book_project/view_models/home/timer_vm.dart';
+import 'package:elpo_book_project/view_models/schedule/schedule_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
-import 'view_models/home_vm.dart';
+import 'view_models/home/home_vm.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
 
@@ -20,6 +21,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
+        ChangeNotifierProvider(create: (_) => TimerViewModel()),
         ChangeNotifierProvider(create: (_) => ScheduleVM()),
       ],
       child: const MyApp(),

@@ -1,11 +1,12 @@
+import 'package:elpo_book_project/views/home/widgets/home_timer_landscape.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:animations/animations.dart';
 
 import '../views/home/home_view.dart';
 import '../views/home/edit_plan_view.dart';
-import '../views/home/widgets/timer_detail.dart';
 
+import '../views/home/widgets/timer_expand_view.dart';
 import '../views/project/project_view.dart';
 import '../views/project/widgets/project_crearte_view.dart';
 import '../views/project/widgets/project_detail_view.dart';
@@ -14,11 +15,15 @@ import '../views/schedule/schedule_view.dart';
 import '../views/setting/setting_view.dart';
 
 import 'main_shell.dart';
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final GoRouter appRouter = GoRouter(
+  navigatorKey: _rootNavigatorKey,
   initialLocation: '/home',
   routes: [
     ShellRoute(
+      navigatorKey: _shellNavigatorKey,
       pageBuilder: (context, state, child) {
         return CustomTransitionPage(
           key: state.pageKey,
@@ -61,18 +66,13 @@ final GoRouter appRouter = GoRouter(
         // =========================
         // 홈 관련
         // =========================
-        GoRoute(
-          path: '/timer',
-          name: 'timer',
-          builder: (_, __) => const TimerDetailView(),
-        ),
-
         // 목표(플랜) 수정: 홈에서도 들어갈 수 있음
         GoRoute(
           path: '/home/edit-plan',
           name: 'homeEditPlan',
           builder: (_, __) => const EditPlanView(),
         ),
+
 
         // =========================
         // 프로젝트 관련
@@ -126,6 +126,12 @@ final GoRouter appRouter = GoRouter(
           builder: (_, __) => const EditPlanView(),
         ),
       ],
+    ),
+    //쉘라우트 안으로 들어가면 안댐
+    GoRoute(
+      path: '/timer',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (_, __) => const TimerExpandView(),
     ),
   ],
 );

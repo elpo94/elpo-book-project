@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class ResetTimerDialog extends StatelessWidget {
   final String title;
+
   const ResetTimerDialog({super.key, required this.title});
 
   @override

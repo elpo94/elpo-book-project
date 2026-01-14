@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../view_models/schedule_vm.dart';
+import '../../../view_models/schedule/schedule_vm.dart';
 import 'schedule_item_card.dart';
 
 class ScheduleItemList extends StatelessWidget {

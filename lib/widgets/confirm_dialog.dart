@@ -10,8 +10,9 @@ Future<bool> showConfirmDialog(
     }) async {
   final result = await showDialog<bool>(
     context: context,
+    useRootNavigator: true,
     barrierDismissible: false,
-    builder: (_) => AlertDialog(
+    builder: (dialogContext) => AlertDialog(
       backgroundColor: const Color(0xFFFFF8EE),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       insetPadding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
@@ -36,12 +37,16 @@ Future<bool> showConfirmDialog(
           children: [
             Expanded(
               child: OutlinedButton(
-                onPressed: () => Navigator.pop(context, false),
+                // dialogContext로 pop
+                onPressed: () => Navigator.of(dialogContext, rootNavigator: true)
+                    .pop(false),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   backgroundColor: const Color(0xFFF3E9D2),
                   side: const BorderSide(color: Color(0xFFE1D5C7)),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
                 child: Text(
                   cancelText,
@@ -55,15 +60,22 @@ Future<bool> showConfirmDialog(
             const SizedBox(width: 12),
             Expanded(
               child: FilledButton(
-                onPressed: () => Navigator.pop(context, true),
+                // 반드시 dialogContext로 pop
+                onPressed: () => Navigator.of(dialogContext, rootNavigator: true)
+                    .pop(true),
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   backgroundColor: confirmColor ?? const Color(0xFFD65C5C),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
                 child: Text(
                   confirmText,
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -75,4 +87,3 @@ Future<bool> showConfirmDialog(
 
   return result ?? false;
 }
-

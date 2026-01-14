@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '../models/calendar_item.dart';
+import '../../models/calendar_item.dart';
 
 class ScheduleVM extends ChangeNotifier {
   DateTime focusedDay = DateTime.now();
