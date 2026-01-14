@@ -1,4 +1,4 @@
-import 'package:elpo_book_project/views/home/widgets/home_timer_landscape.dart';
+import 'package:elpo_book_project/views/home/widgets/timer/home_timer_landscape.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:animations/animations.dart';
@@ -6,7 +6,7 @@ import 'package:animations/animations.dart';
 import '../views/home/home_view.dart';
 import '../views/home/edit_plan_view.dart';
 
-import '../views/home/widgets/timer_expand_view.dart';
+import '../views/home/widgets/timer/timer_expand_view.dart';
 import '../views/project/project_view.dart';
 import '../views/project/widgets/project_crearte_view.dart';
 import '../views/project/widgets/project_detail_view.dart';

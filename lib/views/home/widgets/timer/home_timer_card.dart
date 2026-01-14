@@ -1,5 +1,6 @@
 import 'package:elpo_book_project/view_models/home/timer_vm.dart';
-import 'package:elpo_book_project/views/home/widgets/timer_controls.dart';
+import 'package:elpo_book_project/views/home/widgets/timer/show_timer_setting_sheet.dart';
+import 'package:elpo_book_project/views/home/widgets/timer/timer_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +33,16 @@ class HomeTimerCard extends StatelessWidget {
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: onTap,
+            onTap: () async {
+              if (vm.isEditing) return;
+
+              if (!vm.hasTarget) {
+                await showTimerSettingSheet(context, vm);
+                return;
+              }
+
+              onTap?.call();
+            },
             child: Card(
               elevation: 1,
               shape: RoundedRectangleBorder(

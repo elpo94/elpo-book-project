@@ -1,5 +1,5 @@
 import 'package:elpo_book_project/view_models/home/timer_vm.dart';
-import 'package:elpo_book_project/views/home/widgets/timer_controls.dart';
+import 'package:elpo_book_project/views/home/widgets/timer/timer_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';

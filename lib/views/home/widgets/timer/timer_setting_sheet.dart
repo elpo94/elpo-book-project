@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../widgets/confirm_dialog.dart';
+import '../../../../widgets/confirm_dialog.dart';
 
 class TimerSettingSheet extends StatefulWidget {
   final Duration initial;

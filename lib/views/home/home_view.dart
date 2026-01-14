@@ -1,5 +1,5 @@
 import 'package:elpo_book_project/views/home/widgets/home_selection.dart';
-import 'package:elpo_book_project/views/home/widgets/home_timer_card.dart';
+import 'package:elpo_book_project/views/home/widgets/timer/home_timer_card.dart';
 import 'package:elpo_book_project/views/home/widgets/memo_card.dart';
 import 'package:elpo_book_project/views/home/widgets/today_plan_card.dart';
 import 'package:flutter/material.dart';
