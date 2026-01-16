@@ -1,6 +1,8 @@
-import 'package:elpo_book_project/views/home/widgets/timer/timer_reset_button.dart';
 import 'package:flutter/material.dart';
-import 'timer_primary_button.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../view_models/home/timer_vm.dart';
+import 'timer_button.dart';
 
 class TimerControls extends StatelessWidget {
   final bool compact;
@@ -14,18 +16,24 @@ class TimerControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final buttonPadding = compact
-        ? const EdgeInsets.symmetric(horizontal: 18, vertical: 12)
-        : const EdgeInsets.symmetric(horizontal: 22, vertical: 14);
+    final vm = context.watch<TimerViewModel>();
 
     return Padding(
       padding: padding,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TimerPrimaryButton(padding: buttonPadding, compact: compact),
+          TimerButton(
+            vm: vm,
+            kind: TimerButtonKind.primary,
+            compact: compact,
+          ),
           const SizedBox(width: 12),
-          TimerResetButton(padding: buttonPadding),
+          TimerButton(
+            vm: vm,
+            kind: TimerButtonKind.reset,
+            compact: compact,
+          ),
         ],
       ),
     );

@@ -3,6 +3,7 @@ import 'package:elpo_book_project/views/home/widgets/timer/show_timer_setting_sh
 import 'package:elpo_book_project/views/home/widgets/timer/timer_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:elpo_book_project/widgets/button_style.dart';
 
 class HomeTimerCard extends StatelessWidget {
   final VoidCallback? onTap;

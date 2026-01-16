@@ -1,12 +1,10 @@
-import 'package:elpo_book_project/views/home/widgets/timer/home_timer_landscape.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:animations/animations.dart';
 
 import '../views/home/home_view.dart';
 import '../views/home/edit_plan_view.dart';
-
 import '../views/home/widgets/timer/timer_expand_view.dart';
+
 import '../views/project/project_view.dart';
 import '../views/project/widgets/project_crearte_view.dart';
 import '../views/project/widgets/project_detail_view.dart';
@@ -15,119 +13,91 @@ import '../views/schedule/schedule_view.dart';
 import '../views/setting/setting_view.dart';
 
 import 'main_shell.dart';
+
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
-final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: '/home',
   routes: [
-    ShellRoute(
-      navigatorKey: _shellNavigatorKey,
-      pageBuilder: (context, state, child) {
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: MainShell(child: child),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return SharedAxisTransition(
-              animation: animation,
-              secondaryAnimation: secondaryAnimation,
-              transitionType: SharedAxisTransitionType.scaled,
-              child: child,
-            );
-          },
+    /// ✅ 탭 전용 Shell (상태 유지)
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        return MainShell(
+          navigationShell: navigationShell,
         );
       },
-      routes: [
-        // =========================
-        // 탭 라우트 (BottomNav)
-        // =========================
-        GoRoute(
-          path: '/home',
-          name: 'home',
-          builder: (_, __) => const HomeView(),
-        ),
-        GoRoute(
-          path: '/project',
-          name: 'project',
-          builder: (_, __) => const ProjectView(),
-        ),
-        GoRoute(
-          path: '/schedule',
-          name: 'schedule',
-          builder: (_, __) => const ScheduleView(),
-        ),
-        GoRoute(
-          path: '/setting',
-          name: 'setting',
-          builder: (_, __) => const SettingView(),
+      branches: [
+        /// 홈 탭
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/home',
+              name: 'home',
+              builder: (_, __) => const HomeView(),
+            ),
+            GoRoute(
+              path: '/home/edit-plan',
+              name: 'homeEditPlan',
+              builder: (_, __) => const EditPlanView(),
+            ),
+          ],
         ),
 
-        // =========================
-        // 홈 관련
-        // =========================
-        // 목표(플랜) 수정: 홈에서도 들어갈 수 있음
-        GoRoute(
-          path: '/home/edit-plan',
-          name: 'homeEditPlan',
-          builder: (_, __) => const EditPlanView(),
+        /// 프로젝트 탭
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/project',
+              name: 'project',
+              builder: (_, __) => const ProjectView(),
+            ),
+            GoRoute(
+              path: '/project/create',
+              name: 'projectCreate',
+              builder: (_, __) => const ProjectCreateView(),
+            ),
+            GoRoute(
+              path: '/project/:id',
+              name: 'projectDetail',
+              builder: (context, state) {
+                final id = state.pathParameters['id']!;
+                return ProjectDetailView(projectId: id);
+              },
+            ),
+          ],
         ),
 
-
-        // =========================
-        // 프로젝트 관련
-        // =========================
-        GoRoute(
-          path: '/project/create',
-          name: 'projectCreate',
-          builder: (_, __) => const ProjectCreateView(),
-        ),
-        GoRoute(
-          path: '/project/:id',
-          name: 'projectDetail',
-          builder: (context, state) {
-            final id = state.pathParameters['id']!;
-            return ProjectDetailView(projectId: id);
-          },
+        /// 일정 탭
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/schedule',
+              name: 'schedule',
+              builder: (_, __) => const ScheduleView(),
+            ),
+          ],
         ),
 
-        /// ✅ 지금은 UI단계라 edit 화면이 없을 수 있음.
-        /// 나중에 프로젝트 수정 화면 만들면 여기 builder만 갈아끼우면 됨.
-        // GoRoute(
-        //   path: '/project/:id/edit',
-        //   name: 'projectEdit',
-        //   builder: (context, state) {
-        //     final id = state.pathParameters['id']!;
-        //     return ProjectEditView(projectId: id);
-        //   },
-        // ),
-
-        // =========================
-        // 스케줄(캘린더) 관련
-        // =========================
-        /// ✅ 지금은 UI단계라 상세 화면 없어도 됨.
-        /// 카드 클릭 라우팅 시작할 때 추가하면 됨.
-        // GoRoute(
-        //   path: '/schedule/:id',
-        //   name: 'scheduleDetail',
-        //   builder: (context, state) {
-        //     final id = state.pathParameters['id']!;
-        //     return ScheduleDetailView(itemId: id);
-        //   },
-        // ),
-
-        // =========================
-        // 세팅 관련
-        // =========================
-        /// ✅ 세팅에서 목표 수정으로 연결하고 싶으면 이 라우트 쓰면 됨
-        GoRoute(
-          path: '/setting/plan',
-          name: 'settingPlan',
-          builder: (_, __) => const EditPlanView(),
+        /// 설정 탭
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/setting',
+              name: 'setting',
+              builder: (_, __) => const SettingView(),
+            ),
+            GoRoute(
+              path: '/setting/plan',
+              name: 'settingPlan',
+              builder: (_, __) => const EditPlanView(),
+            ),
+          ],
         ),
       ],
     ),
-    //쉘라우트 안으로 들어가면 안댐
+
+    /// ✅ 탭과 무관한 전체 오버레이 화면
     GoRoute(
       path: '/timer',
       parentNavigatorKey: _rootNavigatorKey,

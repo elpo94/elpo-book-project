@@ -9,6 +9,10 @@ import 'view_models/home/home_vm.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
 
+//파이어베이스
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -38,7 +42,7 @@ class MyApp extends StatelessWidget {
       title: '사부작',
       theme: appTheme,
       routerConfig: appRouter,
-      localizationsDelegates: const [
+      localizationsDelegates: const [//todo : 왜 넣었을까?
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
