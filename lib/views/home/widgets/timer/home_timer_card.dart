@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:elpo_book_project/widgets/button_style.dart';
 
+import '../../../../widgets/confirm_dialog.dart';
+
 class HomeTimerCard extends StatelessWidget {
   final VoidCallback? onTap;
 
@@ -63,7 +65,22 @@ class HomeTimerCard extends StatelessWidget {
                     const SizedBox(height: 16),
 
                     // ✅ 공통 컨트롤
-                    const TimerControls(compact: true),
+                    TimerControls(
+                      onReset: () async {
+                        final ok = await showConfirmDialog(
+                          context,
+                          title: '타이머를 초기화할까요?',
+                          message: '누적된 시간이 00:00:00으로 돌아갑니다.',
+                          cancelText: '취소',
+                          confirmText: '초기화',
+                        );
+
+                        if (ok) {
+                          context.read<TimerViewModel>().reset();
+                        }
+                      },
+                    ),
+
                   ],
                 ),
               ),

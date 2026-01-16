@@ -1,9 +1,11 @@
-import 'package:elpo_book_project/view_models/home/timer_vm.dart';
-import 'package:elpo_book_project/views/home/widgets/timer/timer_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../view_models/home/timer_vm.dart';
+import 'timer_controls.dart';
+import '../../../../widgets/confirm_dialog.dart';
 
 class TimerExpandView extends StatefulWidget {
   const TimerExpandView({super.key});
@@ -32,32 +34,43 @@ class _TimerExpandViewState extends State<TimerExpandView> {
     ]);
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-
     super.dispose();
+  }
+
+  Future<void> _handleReset(BuildContext context) async {
+    final vm = context.read<TimerViewModel>();
+
+    final ok = await showConfirmDialog(
+      context,
+      title: '타이머를 초기화할까요?',
+      message: '누적된 시간이 00:00:00으로 돌아갑니다.\n되돌릴 수 없습니다.',
+      cancelText: '취소',
+      confirmText: '초기화',
+      confirmColor: const Color(0xFFD65C5C),
+    );
+
+    if (!ok || !context.mounted) return;
+
+    vm.reset();
+    context.go('/home');
   }
 
   String _format(Duration d) {
     String two(int n) => n.toString().padLeft(2, '0');
-    final h = d.inHours;
-    final m = d.inMinutes.remainder(60);
-    final s = d.inSeconds.remainder(60);
-    return '${two(h)}:${two(m)}:${two(s)}';
+    return '${two(d.inHours)}:${two(d.inMinutes.remainder(60))}:${two(d.inSeconds.remainder(60))}';
   }
 
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<TimerViewModel>();
 
-    final display = vm.isRunning
-        ? vm.remaining
-        : (vm.hasTarget ? vm.remaining : Duration.zero);
+    final display = vm.hasTarget ? vm.remaining : Duration.zero;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF3E8DF),
       body: SafeArea(
         child: Stack(
           children: [
-            // 중앙 시간
             Center(
               child: Text(
                 _format(display),
@@ -69,20 +82,15 @@ class _TimerExpandViewState extends State<TimerExpandView> {
               ),
             ),
 
-            // 접기
             Positioned(
               top: 6,
               left: 6,
               child: IconButton(
-                icon: const Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  size: 40,
-                ),
+                icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 40),
                 onPressed: () => context.pop(),
               ),
             ),
 
-            // ✅ 하단 버튼 패널 (공통 위젯 사용)
             Positioned(
               left: 0,
               right: 0,
@@ -90,9 +98,10 @@ class _TimerExpandViewState extends State<TimerExpandView> {
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 520),
-                  child: const TimerControls(
+                  child: TimerControls(
                     compact: false,
-                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    onReset: () => _handleReset(context),
                   ),
                 ),
               ),

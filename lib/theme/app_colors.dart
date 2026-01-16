@@ -52,4 +52,13 @@ class AppColors {
   // Calendar
   static const Color calendarSelected = Color(0xFFB58A53); // 선택일 색상
   static const Color calendarSelectedOn = AppColors.background; // 선택일 텍스트 컬러
+
+// Primary button (Start / Stop)
+  static const buttonPrimaryBg = Color(0xFFB58A53); // 피그마 브라운
+  static const buttonPrimaryFg = Colors.white;
+
+  // Secondary button (Reset)
+  static const buttonSecondaryBg = Color(0xFFF1E5CF); // 연한 베이지
+  static const buttonSecondaryFg = Color(0xFF6B4F2D); // 브라운 텍스트
+  static const buttonSecondaryBorder = Color(0xFFD8C8AD);
 }

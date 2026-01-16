@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:elpo_book_project/theme/app_colors.dart';
 
-enum AppButtonStyle {
-  primary, // 설정 / Start / Stop : 갈색 filled + 흰 글씨
-  outline, // 취소 : 기본 outline
-  danger,  // Reset / 초기화 : 빨강 filled + 흰 글씨
-}
-
-class AppButtonColors {
-  static const brown = Color(0xFF452829);
-  static const danger = Color(0xFFD65C5C);
-}
+import 'app_button_style.dart';
 
 class AppActionButton extends StatelessWidget {
   final String label;
@@ -27,41 +19,44 @@ class AppActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     switch (style) {
       case AppButtonStyle.primary:
+      // Start / Stop
         return FilledButton(
           onPressed: onPressed,
-          style: FilledButton.styleFrom(
+          child: Text(label),
+        );
+
+      case AppButtonStyle.outline:
+      // Reset (피그마 기준)
+        return OutlinedButton(
+          onPressed: onPressed,
+          style: OutlinedButton.styleFrom(
+            backgroundColor: AppColors.buttonSecondaryBg,
+            foregroundColor: AppColors.buttonSecondaryFg,
+            side: const BorderSide(
+              color: AppColors.buttonSecondaryBorder,
+              width: 1,
+            ),
             padding: padding,
-            backgroundColor: AppButtonColors.brown,
-            foregroundColor: Colors.white,
-            textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            textStyle: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
+            ),
           ),
           child: Text(label),
         );
 
       case AppButtonStyle.danger:
+      // (지금은 거의 안 쓰는 게 맞음)
         return FilledButton(
           onPressed: onPressed,
           style: FilledButton.styleFrom(
-            padding: padding,
-            backgroundColor: AppButtonColors.danger,
+            backgroundColor: const Color(0xFFD65C5C),
             foregroundColor: Colors.white,
-            textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
-          ),
-          child: Text(label),
-        );
-
-      case AppButtonStyle.outline:
-        return OutlinedButton(
-          onPressed: onPressed,
-          style: OutlinedButton.styleFrom(
-            padding: padding,
-            foregroundColor: theme.colorScheme.onSurface,
-            side: BorderSide(color: theme.colorScheme.outline),
-            textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
           ),
           child: Text(label),
         );
