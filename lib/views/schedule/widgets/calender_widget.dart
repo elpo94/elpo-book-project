@@ -4,7 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../../../models/calendar_item.dart';
 import '../../../theme/app_colors.dart';
-import '../../../view_models/schedule_vm.dart';
+import '../../../view_models/schedule/schedule_vm.dart';
 
 class CalendarWidget extends StatelessWidget {
   const CalendarWidget({super.key});
@@ -179,7 +179,7 @@ class _DayCell extends StatelessWidget {
         child: Text(
           '${day.day}',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
             color: isSelected ? AppColors.calendarSelectedOn : AppColors.foreground,
           ),

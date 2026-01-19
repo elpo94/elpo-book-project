@@ -1,12 +1,17 @@
-import 'package:elpo_book_project/view_models/schedule_vm.dart';
+import 'package:elpo_book_project/view_models/home/timer_vm.dart';
+import 'package:elpo_book_project/view_models/schedule/schedule_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
-import 'view_models/home_vm.dart';
+import 'view_models/home/home_vm.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
+
+//파이어베이스
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +25,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
+        ChangeNotifierProvider(create: (_) => TimerViewModel()),
         ChangeNotifierProvider(create: (_) => ScheduleVM()),
       ],
       child: const MyApp(),
@@ -36,7 +42,7 @@ class MyApp extends StatelessWidget {
       title: '사부작',
       theme: appTheme,
       routerConfig: appRouter,
-      localizationsDelegates: const [
+      localizationsDelegates: const [//todo : 왜 넣었을까?
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

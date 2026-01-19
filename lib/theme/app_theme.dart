@@ -54,12 +54,17 @@ final ThemeData appTheme = ThemeData(
 
   filledButtonTheme: FilledButtonThemeData(
     style: FilledButton.styleFrom(
-      backgroundColor: const Color(0xFFB58A53), // 피그마색
-      foregroundColor: const Color(0xFF3A2B1A), // 글씨
-      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
-      minimumSize: const Size(0, 48), // 버튼 높이 고정
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+      backgroundColor: AppColors.buttonPrimaryBg,
+      foregroundColor: AppColors.buttonPrimaryFg,
+      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+      minimumSize: const Size(0, 48),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+      ),
+      textStyle: const TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 15,
+      ),
     ),
   ),
 

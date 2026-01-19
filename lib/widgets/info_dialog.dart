@@ -8,7 +8,7 @@ Future<void> showInfoDialog(
     }) async {
   await showDialog<void>(
     context: context,
-    useRootNavigator: true,     // ✅ 중요
+    useRootNavigator: true,
     barrierDismissible: true,
     builder: (dialogContext) => AlertDialog(
       backgroundColor: const Color(0xFFFFF8EE),
