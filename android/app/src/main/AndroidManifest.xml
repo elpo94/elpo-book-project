@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
+<<<<<<< HEAD
         android:label="sabujak_application"
+=======
+        android:label="사부작"
+>>>>>>> 72077f8b1ad17dd4540100413aed8b7925967dea
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
