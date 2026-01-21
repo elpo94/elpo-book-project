@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "35041699528",
+    "project_id": "sabujak-74dbb",
+    "storage_bucket": "sabujak-74dbb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35041699528:android:5c04dd2fb2f6e3c20f27fd",
+        "android_client_info": {
+          "package_name": "com.example.elpo_book_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3Bug_DxK0ZGiXXodEhYfD8CDWwYCXftM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35041699528:android:879885d20a5a0c390f27fd",
+        "android_client_info": {
+          "package_name": "com.example.sabujak"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3Bug_DxK0ZGiXXodEhYfD8CDWwYCXftM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35041699528:android:489d630b1ebd172e0f27fd",
+        "android_client_info": {
+          "package_name": "com.example.sabujak_application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3Bug_DxK0ZGiXXodEhYfD8CDWwYCXftM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
