@@ -130,5 +130,33 @@ class ProjectViewModel extends ChangeNotifier {
       _setLoading(false);
     }
   }
+  Future<void> updateProjectPartially({
+    required String projectId,
+    required ProjectStatus status,
+    required String memo,
+  }) async {
+    try {
+      // 1. 리스트에서 해당 프로젝트 찾기
+      final index = _projects.indexWhere((p) => p.id == projectId);
+
+      if (index != -1) {
+        // 2. 해당 필드만 교체 (기존 데이터 복사하며 일부만 변경)
+        _projects[index] = _projects[index].copyWith(
+          status: status,
+          memo: memo,
+        );
+
+        // TODO: Firebase 사용 시 여기서도 업데이트 로직 필요
+        // await _db.collection('projects').doc(projectId).update({
+        //   'status': status.name,
+        //   'memo': memo,
+        // });
+
+        notifyListeners(); // UI에 변경 사실 알림
+      }
+    } catch (e) {
+      debugPrint("부분 업데이트 실패: $e");
+    }
+  }
 
 }

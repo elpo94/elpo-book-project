@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sabujak_application/views/project/widgets/project_crearte_view.dart';
 import '../../../models/project.dart';
 import '../../../view_models/project/project_vm.dart';
 import '../../../theme/app_colors.dart';
@@ -27,20 +28,35 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
       orElse: () => ProjectModel.empty(),
     );
 
-    // 1. 초기 상태 설정
     if (!_isInitialized) {
       _currentStatus = project.status;
       // _memoController.text = project.memo ?? ''; // 메모 필드 연동 시 주석 해제
       _isInitialized = true;
     }
 
-    // 2. 표시용 상태 계산 (지연 여부 확인)
     final dStatus = project.displayStatus;
     final bool isOverdue = dStatus == ProjectDisplayStatus.overdue;
+    const Spacer();
+    _buildBottomButtons(project);
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit_note, size: 28, color: Color(0xFFB58A53)),
+            onPressed: () {
+              // 기존에 쓰던 크리에이트 뷰로 이동하여 전체 수정
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProjectCreateView(initialProject: project),
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 12),
+        ],
         title: const Text("사부작", style: TextStyle(color: AppColors.foreground, fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -78,7 +94,7 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
             _buildMemoField(),
 
             const Spacer(),
-            _buildBottomButtons(),
+            _buildBottomButtons(project),
           ],
         ),
       ),
@@ -193,7 +209,7 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
     ),
   );
 
-  Widget _buildBottomButtons() {
+  Widget _buildBottomButtons(ProjectModel project) {
     return Row(
       children: [
         Expanded(
@@ -210,15 +226,26 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
         const SizedBox(width: 12),
         Expanded(
           child: ElevatedButton(
-            onPressed: () {
-              // TODO: 업데이트 로직 연결
+            onPressed: () async {
+              // 메모와 상태값만 부분 업데이트
+              await context.read<ProjectViewModel>().updateProjectPartially(
+                projectId: project.id,
+                status: _currentStatus,
+                memo: _memoController.text,
+              );
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('상태와 메모가 저장되었습니다.')),
+                );
+                Navigator.pop(context);
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFB58A53),
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
-            child: const Text('수정', style: TextStyle(color: Colors.white)),
+            child: const Text('수정', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           ),
         ),
       ],
