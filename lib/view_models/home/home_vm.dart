@@ -1,20 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../models/project.dart';
+import '../../services/project_service.dart';
+import '../../services/project_store.dart';
+import '../../views/project/widgets/project_status.dart';
+
 class HomeViewModel extends ChangeNotifier {
-  // 데이터 변수들
+  final ProjectStore _projectStore;
+  final ProjectService _projectService = ProjectService();
+
   String _todayPlan = "오늘의 목표를 설정하세요";
-  int _targetTime = 0; // 목표 시간 (분 단위)
+  int _targetTime = 0;
   String _planMemo = "";
 
+  //
+  HomeViewModel(this._projectStore) {
+    _projectStore.addListener(_onStoreChanged);
+
+    _projectStore.fetchAndStore();
+    _loadAllData();
+  }
+
+  void _onStoreChanged() {
+    notifyListeners();
+  }
+
+  Future<void> _initialize() async {
+    await _projectStore.fetchAndStore(); // 여기서 await를 사용합니다.
+    await _loadAllData();
+  }
+
   String get todayPlan => _todayPlan;
-
   int get targetTime => _targetTime;
-
   String get planMemo => _planMemo;
 
-  HomeViewModel() {
-    _loadAllData();
+  void _onProjectStoreChanged() {
+    notifyListeners(); //
+  }
+
+  @override
+  void dispose() {
+    _projectStore.removeListener(_onProjectStoreChanged);
+    super.dispose();
+  }
+
+
+  List<ProjectModel> get ongoingProjects {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    return _projectStore.projects.where((project) {
+      final isWithinRange = (project.startDate.isBefore(today) || project.startDate.isAtSameMomentAs(today)) &&
+          (project.endDate.isAfter(today) || project.endDate.isAtSameMomentAs(today));
+
+      final isUnfinishedOverdue = project.endDate.isBefore(today) && project.status != ProjectStatus.done;
+
+      return isWithinRange || isUnfinishedOverdue;
+    }).toList();
   }
 
   // 모든 데이터 로드

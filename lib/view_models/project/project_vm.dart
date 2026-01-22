@@ -40,16 +40,15 @@ class ProjectViewModel extends ChangeNotifier {
     }
   }
 
-  // 프로젝트 생성 로직
   Future<void> addProject(ProjectModel newProject) async {
     _setLoading(true);
     try {
-      // 서비스에 생성을 요청하고 다시 fetch하여 Store를 동기화합니다.
+      // 1. 서버에 추가
       await _projectService.createProject(newProject);
-      await fetchProjects();
+      // 2. 추가 성공 후, 서비스가 서버 데이터를 가져와서 Store(서류함)에 붓게 합니다.
+      await _projectService.fetchAndStore(_projectStore);
     } catch (e) {
-      debugPrint("프로젝트 저장 실패: $e");
-      rethrow;
+      debugPrint("추가 실패: $e");
     } finally {
       _setLoading(false);
     }

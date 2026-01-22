@@ -23,15 +23,24 @@ class ScheduleVM extends ChangeNotifier {
     // 직접 getProjects()를 호출하지 않고 서비스가 Store에 채우게 시킵니다.
     await _service.fetchAndStore(_projectStore);
   }
-  // 캘린더 점(Marker) 표시용 데이터 반환
+
   List<CalendarItem> itemsOf(DateTime day) {
-    return _allProjects
-        .where((p) => isSameDay(p.endDate, day))
+    final targetDay = DateTime(day.year, day.month, day.day); // 시간 오차 제거
+
+    return _projectStore.projects
+        .where((p) {
+      // ✅ 종료일만 체크하는 대신, 시작일과 종료일 사이인지 확인합니다.
+      final start = DateTime(p.startDate.year, p.startDate.month, p.startDate.day);
+      final end = DateTime(p.endDate.year, p.endDate.month, p.endDate.day);
+
+      return (targetDay.isAtSameMomentAs(start) || targetDay.isAfter(start)) &&
+          (targetDay.isAtSameMomentAs(end) || targetDay.isBefore(end));
+    })
         .map((p) => CalendarItem(
       id: p.id,
       title: p.name,
       status: p.status,
-      date: p.endDate,
+      date: p.endDate, // 리스트 표시용 날짜
       projectId: p.id,
     ))
         .toList();

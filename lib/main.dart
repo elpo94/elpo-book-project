@@ -31,23 +31,24 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        // 1. 가장 먼저 중앙 서류함(Store)을 만듭니다.
+        // 서류함
         ChangeNotifierProvider(create: (_) => ProjectStore()),
 
-        // 2. ProjectViewModel: Store를 주입받아 사용합니다.
+        ChangeNotifierProxyProvider<ProjectStore, HomeViewModel>(
+          create: (context) => HomeViewModel(context.read<ProjectStore>()),
+          update: (context, store, previous) => previous ?? HomeViewModel(store),
+        ),
+
         ChangeNotifierProxyProvider<ProjectStore, ProjectViewModel>(
           create: (context) => ProjectViewModel(context.read<ProjectStore>()),
           update: (context, store, previous) => previous ?? ProjectViewModel(store),
         ),
 
-        // 3. ScheduleVM: 마찬가지로 Store를 주입받습니다.
         ChangeNotifierProxyProvider<ProjectStore, ScheduleVM>(
           create: (context) => ScheduleVM(context.read<ProjectStore>()),
           update: (context, store, previous) => previous ?? ScheduleVM(store),
         ),
 
-        // 4. 나머지 독립적인 VM들은 기존처럼 유지 (중복된 구형 코드는 삭제하세요!)
-        ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => TimerViewModel()),
         ChangeNotifierProvider(create: (_) => ProjectCreateViewModel()),
       ],
