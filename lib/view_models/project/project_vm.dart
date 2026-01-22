@@ -1,46 +1,52 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../models/project.dart';
 import '../../services/project_service.dart';
+import '../../services/project_store.dart';
 import '../../views/project/widgets/project_status.dart';
 
 class ProjectViewModel extends ChangeNotifier {
   final ProjectService _projectService = ProjectService();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final ProjectStore _projectStore; // 중앙 서류함을 주입받습니다.
 
-  // 1. 상태 관리 변수 (중복 제거 완료)
-  List<ProjectModel> _projects = [];
   bool _isLoading = false;
   String _sortBy = 'createdAt';
 
-  // 2. Getters
-  List<ProjectModel> get projects => _projects;
+  // 이제 데이터는 내 리스트가 아니라 Store의 리스트를 보여줍니다.
+  List<ProjectModel> get projects => _projectStore.projects;
   bool get isLoading => _isLoading;
-  String get sortBy => _sortBy;
 
-  // 3. 프로젝트 목록 로드
+  // 생성자에서 Store를 전달받습니다. (Provider의 ProxyProvider 등 활용)
+  ProjectViewModel(this._projectStore) {
+    fetchProjects();
+  }
+
+  void _setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
+  // 기존 getProjects 호출 대신 서비스의 fetchAndStore를 사용합니다.
   Future<void> fetchProjects() async {
     _setLoading(true);
     try {
-      _projects = await _projectService.getProjects(sortBy: _sortBy);
+      // 서비스가 데이터를 긁어와서 Store(서류함)에 자동으로 채워넣습니다.
+      await _projectService.fetchAndStore(_projectStore, sortBy: _sortBy);
     } catch (e) {
-      debugPrint("목표 로드 실패: $e");
-      rethrow;
+      debugPrint("데이터 로드 실패: $e");
     } finally {
       _setLoading(false);
     }
   }
 
-  // 4. 프로젝트 생성 (통합 로직)
+  // 프로젝트 생성 로직
   Future<void> addProject(ProjectModel newProject) async {
     _setLoading(true);
     try {
-      final docRef = await _firestore.collection('projects').add(newProject.toMap());
-      final projectWithId = newProject.copyWith(id: docRef.id);
-
-      _projects.insert(0, projectWithId);
-
-      debugPrint("프로젝트 저장 완료: ${docRef.id}");
+      // 서비스에 생성을 요청하고 다시 fetch하여 Store를 동기화합니다.
+      await _projectService.createProject(newProject);
+      await fetchProjects();
     } catch (e) {
       debugPrint("프로젝트 저장 실패: $e");
       rethrow;
@@ -49,39 +55,6 @@ class ProjectViewModel extends ChangeNotifier {
     }
   }
 
-  // 5. 정렬 기준 변경
-  Future<void> updateSorting(String newSortBy) async {
-    if (_sortBy == newSortBy) return;
-    _sortBy = newSortBy;
-    await fetchProjects();
-  }
-
-  // 6. 즐겨찾기 토글
-  Future<void> toggleFavorite(ProjectModel project) async {
-    try {
-      await _projectService.toggleFavorite(project.id, project.isFavorite);
-      await fetchProjects();
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  // 로딩 상태 업데이트 공통 함수 (괄호 닫기 에러 해결)
-  void _setLoading(bool value) {
-    _isLoading = value;
-    notifyListeners();
-  }
-  void deleteProject(String projectId) {
-    _projects.removeWhere((p) => p.id == projectId);
-    // Firestore 연동 중이라면 여기서 await _db.collection('projects').doc(projectId).delete();
-    notifyListeners();
-  }
-
-  // lib/view_models/project/project_vm.dart
-
-// ... 기존 fetchProjects, addProject 등은 유지 ...
-
-  // 🚀 모든 필드를 수정할 수 있는 단일 통합 메서드
   Future<void> updateProject({
     required String projectId,
     required String name,
@@ -92,71 +65,58 @@ class ProjectViewModel extends ChangeNotifier {
     required ProjectStatus status,
     required String memo,
   }) async {
-    _setLoading(true);
     try {
-      // 1. Firestore 서버 데이터 업데이트
-      await _firestore.collection('projects').doc(projectId).update({
+      // 1. 서버에 보낼 데이터 뭉치 만들기
+      final data = {
         'name': name,
         'description': description,
-        'startDate': startDate.toIso8601String(),
-        'endDate': endDate.toIso8601String(),
+        'startDate': Timestamp.fromDate(startDate),
+        'endDate': Timestamp.fromDate(endDate),
         'plans': plans,
         'status': status.name,
-        'memo': memo, // ⭐ DB에 메모 저장
+        'memo': memo,
         'updatedAt': FieldValue.serverTimestamp(),
-      });
+      };
 
-      // 2. 로컬 리스트(_projects) 동기화
-      final index = _projects.indexWhere((p) => p.id == projectId);
-      if (index != -1) {
-        _projects[index] = _projects[index].copyWith(
-          id: projectId,
-          name: name,
-          description: description,
-          startDate: startDate,
-          endDate: endDate,
-          plans: plans,
-          status: status,
-          // ⭐ memo 필드가 모델에 있다면 여기에 추가하세요.
-          // memo: memo,
-        );
-        notifyListeners(); // UI에 변경 알림
-      }
-      debugPrint("업데이트 성공: $projectId");
+      // 2. 서비스를 통해 서버 업데이트
+      await _projectService.updateProject(projectId, data);
+
+      // 3. 서버 성공 후 중앙 서류함(Store)의 데이터도 즉시 갱신 (스무스한 전환)
+      await fetchProjects();
     } catch (e) {
-      debugPrint("업데이트 실패: $e");
+      debugPrint("프로젝트 업데이트 실패: $e");
       rethrow;
-    } finally {
-      _setLoading(false);
     }
   }
+
+  // 부분 업데이트 (상세 페이지용)
   Future<void> updateProjectPartially({
     required String projectId,
     required ProjectStatus status,
     required String memo,
   }) async {
     try {
-      // 1. 리스트에서 해당 프로젝트 찾기
-      final index = _projects.indexWhere((p) => p.id == projectId);
+      // 1. 서버 업데이트 시도
+      await _projectService.updateProjectStatusAndMemo(projectId, status, memo);
 
-      if (index != -1) {
-        // 2. 해당 필드만 교체 (기존 데이터 복사하며 일부만 변경)
-        _projects[index] = _projects[index].copyWith(
-          status: status,
-          memo: memo,
-        );
-
-        // TODO: Firebase 사용 시 여기서도 업데이트 로직 필요
-        // await _db.collection('projects').doc(projectId).update({
-        //   'status': status.name,
-        //   'memo': memo,
-        // });
-
-        notifyListeners(); // UI에 변경 사실 알림
-      }
+      // 2. 서버 성공 후 Store의 메모리 데이터만 즉시 교체 (스무스한 갈아끼우기)
+      final updated = projects.firstWhere((p) => p.id == projectId).copyWith(
+        status: status,
+        memo: memo,
+      );
+      _projectStore.updateSingleProject(updated);
     } catch (e) {
-      debugPrint("부분 업데이트 실패: $e");
+      debugPrint("업데이트 실패: $e");
     }
   }
 
+  // 삭제 로직
+  Future<void> deleteProject(String projectId) async {
+    try {
+      await _projectService.deleteProject(projectId);
+      await fetchProjects(); // 삭제 후 Store 최신화
+    } catch (e) {
+      debugPrint("삭제 실패: $e");
+    }
+  }
 }

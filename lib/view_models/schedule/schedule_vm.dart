@@ -1,41 +1,62 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import '../../models/calendar_item.dart';
-import '../../views/project/widgets/project_status.dart';
+import '../../models/project.dart';
+import '../../services/project_service.dart';
+import '../../services/project_store.dart';
 
 class ScheduleVM extends ChangeNotifier {
+  final ProjectService _service = ProjectService();
+  final ProjectStore _projectStore; // ✅ 서류함 추가
+
   DateTime focusedDay = DateTime.now();
-  DateTime selectedDay = CalendarItem.normalizeDate(DateTime.now());
+  DateTime selectedDay = DateTime.now();
 
-  /// UI용 더미
-  final Map<DateTime, List<CalendarItem>> itemsByDay = {};
-
-  ScheduleVM() {
-    // 더미 데이터는 여기서 준비 (UI 전용)
-    final today = CalendarItem.normalizeDate(DateTime.now());
-    itemsByDay[today] = [
-      CalendarItem(
-        id: '1',
-        title: '소설 1부 - 설정 메모',
-        status: ProjectStatus.planned,
-        date: today,
-        note: '세계관 이름 후보 정리',
-      ),
-    ];
+  // ✅ 생성자에서 Store를 받습니다.
+  ScheduleVM(this._projectStore) {
+    loadData();
   }
 
+  // 이제 내부에 리스트를 따로 두지 않고 Store의 것을 가져다 씁니다.
+  List<ProjectModel> get _allProjects => _projectStore.projects;
+
+  Future<void> loadData() async {
+    // 직접 getProjects()를 호출하지 않고 서비스가 Store에 채우게 시킵니다.
+    await _service.fetchAndStore(_projectStore);
+  }
+  // 캘린더 점(Marker) 표시용 데이터 반환
   List<CalendarItem> itemsOf(DateTime day) {
-    final key = CalendarItem.normalizeDate(day);
-    return itemsByDay[key] ?? const [];
+    return _allProjects
+        .where((p) => isSameDay(p.endDate, day))
+        .map((p) => CalendarItem(
+      id: p.id,
+      title: p.name,
+      status: p.status,
+      date: p.endDate,
+      projectId: p.id,
+    ))
+        .toList();
+  }
+
+  // 선택된 날짜에 진행 중인 프로젝트 필터링
+  List<ProjectModel> get projectsInSelectedDay {
+    return _allProjects.where((p) {
+      final start = DateUtils.dateOnly(p.startDate);
+      final end = DateUtils.dateOnly(p.endDate);
+      final target = DateUtils.dateOnly(selectedDay);
+      return (target.isAtSameMomentAs(start) || target.isAfter(start)) &&
+          (target.isAtSameMomentAs(end) || target.isBefore(end));
+    }).toList();
   }
 
   void selectDay(DateTime selected, DateTime focused) {
-    selectedDay = CalendarItem.normalizeDate(selected);
+    selectedDay = selected;
     focusedDay = focused;
     notifyListeners();
   }
+}
 
-  void setFocusedDay(DateTime focused) {
-    focusedDay = focused;
-    notifyListeners();
-  }
+// 두 날짜가 같은 날인지 확인 (시간 제외)
+bool isSameDay(DateTime? a, DateTime? b) {
+  if (a == null || b == null) return false;
+  return a.year == b.year && a.month == b.month && a.day == b.day;
 }
