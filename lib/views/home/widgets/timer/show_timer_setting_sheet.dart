@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../theme/app_colors.dart';
 import '../../../../view_models/home/timer_vm.dart';
 import '../../../../widgets/confirm_dialog.dart';
 import 'timer_setting_sheet.dart';
@@ -13,6 +14,8 @@ Future<void> showTimerSettingSheet(
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      barrierColor: Colors.transparent,
+      backgroundColor: AppColors.background,
       builder: (_) {
         return TimerSettingSheet(
           onConfirm: vm.setTarget,

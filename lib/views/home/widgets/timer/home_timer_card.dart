@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sabujak_application/theme/app_colors.dart';
 import 'package:sabujak_application/views/home/widgets/timer/show_timer_setting_sheet.dart';
 import 'package:sabujak_application/views/home/widgets/timer/timer_controls.dart';
 import '../../../../view_models/home/timer_vm.dart';
@@ -34,7 +35,7 @@ class HomeTimerCard extends StatelessWidget {
       child: Hero(
         tag: 'timer-card-hero',
         child: Material(
-          color: Colors.transparent,
+          color: AppColors.background,
           child: InkWell(
             onTap: () async {
               if (vm.isEditing) return;

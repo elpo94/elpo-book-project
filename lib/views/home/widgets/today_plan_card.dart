@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sabujak_application/theme/app_colors.dart';
 import '../../../view_models/home/home_vm.dart';
 
 class TodayPlanCard extends StatelessWidget {
@@ -69,10 +70,23 @@ class TodayPlanCard extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
+      elevation: 0,
+      barrierColor: Colors.transparent,
+      backgroundColor: AppColors.background,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      ),
+        builder: (context) => Theme(
+          data: Theme.of(context).copyWith(
+            // 여기서 M3의 색상 보정(Tint)을 꺼버립니다.
+            canvasColor: Colors.transparent,
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              surfaceTint: Colors.transparent,
+            ),
+          ),
+          child: Container(
         decoration: const BoxDecoration(
-          color: Color(0xFFFDFCF9), // 시트 배경색
+          color: AppColors.background, // 시트 배경색
           borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
         ),
         padding: EdgeInsets.only(
@@ -116,6 +130,7 @@ class TodayPlanCard extends StatelessWidget {
           ],
         ),
       ),
+    )
     );
   }
 

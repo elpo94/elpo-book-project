@@ -11,7 +11,7 @@ class HomeProjectCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.push('/project-detail/${project.id}'),
+      onTap: () => context.push('/project/${project.id}'),
       child: Container(
         width: 160,
         margin: const EdgeInsets.only(right: 12),

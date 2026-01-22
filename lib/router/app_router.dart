@@ -19,7 +19,10 @@ final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: '/home',
   routes: [
-    /// 1. 바텀바가 있는 탭 영역
+    GoRoute(
+      path: '/',
+      redirect: (_, __) => '/home',
+    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) => MainShell(navigationShell: navigationShell),
       branches: [
@@ -33,12 +36,12 @@ final GoRouter appRouter = GoRouter(
     /// 2. 바텀바가 없는 전체 화면 영역 (Shell 밖으로 탈출)
     GoRoute(
       path: '/project/create',
-      parentNavigatorKey: _rootNavigatorKey, // ✅ 루트 네비게이터를 써서 바텀바를 덮어버립니다.
+      parentNavigatorKey: _rootNavigatorKey,
       builder: (_, __) => const ProjectCreateView(),
     ),
     GoRoute(
       path: '/project/:id',
-      parentNavigatorKey: _rootNavigatorKey, // ✅ 상세 페이지도 바텀바 없이 몰입!
+      parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) {
         final id = state.pathParameters['id']!;
         return ProjectDetailView(projectId: id);
