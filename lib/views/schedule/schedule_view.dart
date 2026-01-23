@@ -10,6 +10,8 @@ class ScheduleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      ///TOTO : 전체 캘린더를 접는 기능은 고려해볼 것. 프로젝트 많아지면 필요할지도.
+      physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       children: [
         const CalendarWidget(),

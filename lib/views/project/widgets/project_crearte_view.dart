@@ -186,7 +186,7 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
             children: [
               Expanded(
                 child: AppActionButton(
-                  label: "취 his소",
+                  label: "취소",
                   style: AppButtonStyle.outline,
                   onPressed: () => Navigator.pop(context),
                 ),
