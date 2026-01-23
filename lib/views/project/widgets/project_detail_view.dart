@@ -4,11 +4,10 @@ import 'package:sabujak_application/views/project/widgets/project_crearte_view.d
 import '../../../models/project.dart';
 import '../../../view_models/project/project_vm.dart';
 import '../../../theme/app_colors.dart';
-import 'project_status.dart'; // ProjectDisplayStatus가 정의된 곳
+import 'project_status.dart';
 
 class ProjectDetailView extends StatefulWidget {
   final String projectId;
-
   const ProjectDetailView({super.key, required this.projectId});
 
   @override
@@ -30,70 +29,69 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
 
     if (!_isInitialized) {
       _currentStatus = project.status;
-      // _memoController.text = project.memo ?? ''; // 메모 필드 연동 시 주석 해제
+      _memoController.text = project.memo; // 메모 데이터 연동
       _isInitialized = true;
     }
 
     final dStatus = project.displayStatus;
     final bool isOverdue = dStatus == ProjectDisplayStatus.overdue;
-    const Spacer();
-    _buildBottomButtons(project);
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit_note, size: 28, color: Color(0xFFB58A53)),
-            onPressed: () {
-              // 기존에 쓰던 크리에이트 뷰로 이동하여 전체 수정
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProjectCreateView(initialProject: project),
-                ),
-              );
-            },
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        resizeToAvoidBottomInset: true, // 키보드 대응 활성화
+        appBar: AppBar(
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.edit_note, size: 28, color: Color(0xFFB58A53)),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProjectCreateView(initialProject: project),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 12),
+          ],
+          title: const Text("사부작", style: TextStyle(color: AppColors.foreground, fontWeight: FontWeight.bold)),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: AppColors.foreground),
+            onPressed: () => Navigator.pop(context),
           ),
-          const SizedBox(width: 12),
-        ],
-        title: const Text("사부작", style: TextStyle(color: AppColors.foreground, fontWeight: FontWeight.bold)),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppColors.foreground),
-          onPressed: () => Navigator.pop(context),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(28),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        body: Column(
           children: [
-            // 매개변수 3개로 수정 (이름, 설명, 지연여부)
-            _buildProjectHeader(project.name, project.description, isOverdue),
-            const SizedBox(height: 24),
-
-            _infoRow('하루 목표', project.plans.isNotEmpty ? project.plans.first : '설정 없음'),
-            _infoRow('작성 기간', "${_formatDate(project.startDate)} ~ ${_formatDate(project.endDate)}"),
-
-            const SizedBox(height: 32),
-
-            // 지연 상태일 때만 나타나는 경고 문구
-            if (isOverdue) _buildOverdueWarning(),
-
-            const Text('프로젝트 상태', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
-            const SizedBox(height: 12),
-
-            _buildStatusSelector(),
-
-            const SizedBox(height: 32),
-            const Text('메모', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
-            const SizedBox(height: 10),
-            _buildMemoField(),
-
-            const Spacer(),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(28),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildProjectHeader(project.name, project.description, isOverdue),
+                    const SizedBox(height: 24),
+                    _infoRow('하루 목표', project.plans.isNotEmpty ? project.plans.first : '설정 없음'),
+                    _infoRow('작성 기간', "${_formatDate(project.startDate)} ~ ${_formatDate(project.endDate)}"),
+                    const SizedBox(height: 32),
+                    if (isOverdue) _buildOverdueWarning(),
+                    const Text('프로젝트 상태', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                    const SizedBox(height: 12),
+                    _buildStatusSelector(),
+                    const SizedBox(height: 32),
+                    const Text('메모', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                    const SizedBox(height: 10),
+                    _buildMemoField(),
+                    // 키보드가 메모장을 가리지 않도록 하단 여백 확보
+                    SizedBox(height: MediaQuery.of(context).viewInsets.bottom > 0 ? 20 : 40),
+                  ],
+                ),
+              ),
+            ),
             _buildBottomButtons(project),
           ],
         ),
@@ -101,9 +99,6 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
     );
   }
 
-  // --- 헬퍼 메서드 (에러 해결 핵심) ---
-
-  // Header에 지연 상태 배경색 적용
   Widget _buildProjectHeader(String title, String desc, bool isOverdue) {
     return Container(
       width: double.infinity,
@@ -111,7 +106,7 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
       decoration: BoxDecoration(
         color: isOverdue ? AppColors.statusOverdueBg : const Color(0xFFF3EDE2),
         borderRadius: BorderRadius.circular(20),
-        border: isOverdue ? Border.all(color: AppColors.statusOverdue.withValues(alpha: 0.3)) : null,
+        border: isOverdue ? Border.all(color: AppColors.statusOverdue.withOpacity(0.3)) : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +119,6 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
     );
   }
 
-  // 지연 시 경고 위젯 추가
   Widget _buildOverdueWarning() {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -161,16 +155,16 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF3EDE2).withValues(alpha: 0.5),
+        color: const Color(0xFFF3EDE2).withOpacity(0.5),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         children: [
-          _statusToggleButton('예정', ProjectStatus.planned, Colors.orange),
+          _statusToggleButton('예정', ProjectStatus.planned, AppColors.statusPlanned),
           const SizedBox(width: 8),
-          _statusToggleButton('진행중', ProjectStatus.ongoing, Colors.blue),
+          _statusToggleButton('진행중', ProjectStatus.ongoing, AppColors.statusOngoing),
           const SizedBox(width: 8),
-          _statusToggleButton('완료', ProjectStatus.done, Colors.green),
+          _statusToggleButton('완료', ProjectStatus.done, AppColors.statusDone),
         ],
       ),
     );
@@ -204,51 +198,57 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
     decoration: InputDecoration(
       hintText: '프로젝트 관련 메모를 남길 수 있어요',
       filled: true,
-      fillColor: const Color(0xFFF3EDE2).withValues(alpha: 0.5),
+      fillColor: const Color(0xFFF3EDE2).withOpacity(0.5),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
     ),
   );
 
   Widget _buildBottomButtons(ProjectModel project) {
-    return Row(
-      children: [
-        Expanded(
-          child: OutlinedButton(
-            onPressed: () => Navigator.pop(context),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              side: const BorderSide(color: Color(0xFFB58A53)),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    return Container(
+      color: AppColors.background,
+      padding: const EdgeInsets.fromLTRB(24, 10, 24, 20),
+      child: SafeArea(
+        top: false,
+        child: Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: () => Navigator.pop(context),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  side: const BorderSide(color: Color(0xFFB58A53)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: const Text('취소', style: TextStyle(color: Color(0xFFB58A53))),
+              ),
             ),
-            child: const Text('취소', style: TextStyle(color: Color(0xFFB58A53))),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: ElevatedButton(
-            onPressed: () async {
-              // 메모와 상태값만 부분 업데이트
-              await context.read<ProjectViewModel>().updateProjectPartially(
-                projectId: project.id,
-                status: _currentStatus,
-                memo: _memoController.text,
-              );
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('상태와 메모가 저장되었습니다.')),
-                );
-                Navigator.pop(context);
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFB58A53),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () async {
+                  await context.read<ProjectViewModel>().updateProjectPartially(
+                    projectId: project.id,
+                    status: _currentStatus,
+                    memo: _memoController.text,
+                  );
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('상태와 메모가 저장되었습니다.')),
+                    );
+                    Navigator.pop(context);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFB58A53),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: const Text('수정', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              ),
             ),
-            child: const Text('수정', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 

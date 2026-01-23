@@ -7,76 +7,78 @@ class ScheduleItemCard extends StatelessWidget {
   final CalendarItem item;
   final VoidCallback? onTap;
 
-  const ScheduleItemCard({
-    super.key,
-    required this.item,
-    this.onTap,
-  });
-
+  const ScheduleItemCard({super.key, required this.item, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final displayStatus = effectiveStatus(
-      status: item.status, // 저장된 상태 (planned, ongoing, done)
-      deadline: item.date, // 캘린더 아이템의 날짜를 마감일로 판단
+      status: item.status,
+      deadline: item.date,
     );
-    final dot = displayStatus.color;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap, // 상세 이동은 나중
-        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppColors.surface,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.border.withOpacity(0.5)),
           ),
           child: Row(
             children: [
+              // 캘린더 점과 통일감을 주는 상태 마커
               Container(
-                width: 8,
-                height: 8,
+                width: 4,
+                height: 32,
                 decoration: BoxDecoration(
-                  color: dot,
-                  shape: BoxShape.circle,
+                  color: displayStatus.color,
+                  borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       item.title,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.foreground,
-                      ),
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.foreground),
                     ),
-                    if (item.note != null && item.note!.isNotEmpty) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        item.note!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.mutedOn,
-                        ),
-                      ),
-                    ],
+                    const SizedBox(height: 4),
+                    // 성주님이 원하신 일정(기간) 정보 추가
+                    Text(
+                      "${_formatDate(item.date)} 마감 예정",
+                      style: const TextStyle(fontSize: 12, color: AppColors.mutedOn),
+                    ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right_rounded, size: 20),
+              // 우측 상태 배지
+              _buildStatusBadge(displayStatus),
             ],
           ),
         ),
       ),
     );
   }
+
+  Widget _buildStatusBadge(ProjectDisplayStatus status) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: status.backgroundColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        status.label,
+        style: TextStyle(color: status.color, fontSize: 10, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  String _formatDate(DateTime date) => "${date.year}.${date.month}.${date.day}";
 }

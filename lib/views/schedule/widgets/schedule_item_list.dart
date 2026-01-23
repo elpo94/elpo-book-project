@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../../view_models/schedule/schedule_vm.dart';
-import '../../../view_models/schedule_vm.dart' hide ScheduleVM;
 import 'schedule_item_card.dart';
 
 class ScheduleItemList extends StatelessWidget {
-  const ScheduleItemList({super.key});
+  final Function(String projectId)? onCardTap;
+
+  const ScheduleItemList({super.key, this.onCardTap});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,10 @@ class ScheduleItemList extends StatelessWidget {
     return Column(
       children: [
         for (final item in items) ...[
-          ScheduleItemCard(item: item),
+          ScheduleItemCard(
+            item: item,
+            onTap: () => onCardTap?.call(item.projectId ?? ''),
+          ),
           const SizedBox(height: 10),
         ],
       ],

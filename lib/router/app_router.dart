@@ -24,7 +24,11 @@ final GoRouter appRouter = GoRouter(
       redirect: (_, __) => '/home',
     ),
     StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) => MainShell(navigationShell: navigationShell),
+      builder: (context, state, navigationShell) {
+        var shellWidget=MainShell(navigationShell: navigationShell);
+        //print('shellWidgetId:${shellWidget.hashCode}#${shellWidget.navigationShell.shellRouteContext.routerState.fullPath}');
+        return shellWidget;
+      },
       branches: [
         StatefulShellBranch(routes: [ GoRoute(path: '/home', builder: (_, __) => const HomeView()) ]),
         StatefulShellBranch(routes: [ GoRoute(path: '/project', builder: (_, __) => const ProjectView()) ]),

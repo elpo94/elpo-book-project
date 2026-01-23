@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // TableCalendar의 자체 isSameDay를 사용하도록 변경
-import 'package:table_calendar/table_calendar.dart' hide isSameDay;
+import 'package:table_calendar/table_calendar.dart';
 
 import '../../../models/calendar_item.dart';
 import '../../../theme/app_colors.dart';
