@@ -67,13 +67,6 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
             ),
           ),
           centerTitle: true,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.close, color: AppColors.foreground, size: 26),
-              onPressed: () => Navigator.pop(context),
-            ),
-            const SizedBox(width: 8),
-          ],
         ),
         body: Column(
           children: [

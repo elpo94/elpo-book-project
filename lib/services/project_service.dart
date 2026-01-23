@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sabujak_application/services/project_store.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/project.dart';
 import '../views/project/widgets/project_status.dart';
 
 class ProjectService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   late final CollectionReference _projectsRef;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   ProjectService() {
     _projectsRef = _db.collection('projects').withConverter<ProjectModel>(
@@ -44,5 +46,19 @@ class ProjectService {
   // ✅ 프로젝트 삭제
   Future<void> deleteProject(String id) async {
     await _projectsRef.doc(id).delete();
+  }
+  Future<void> clearAllUserData(String userId) async {
+    // 1. Firebase Firestore 데이터 삭제
+    final batch = _firestore.batch();
+    final projects = await _firestore.collection('users').doc(userId).collection('projects').get();
+
+    for (var doc in projects.docs) {
+      batch.delete(doc.reference);
+    }
+    await batch.commit();
+
+    // 2. 로컬 SharedPreferences 초기화 (기본 목표 시간 등)
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
   }
 }

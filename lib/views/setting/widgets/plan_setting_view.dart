@@ -1,63 +1,55 @@
 import 'package:flutter/material.dart';
+import '../../../services/timer_setting_service.dart'; // SettingService가 정의된 곳
 import '../../../theme/app_colors.dart';
-import '../../../widgets/app_button_style.dart';
-import '../../../widgets/button_style.dart';
+import '../../../view_models/home/timer_vm.dart';
+import '../../../widgets/confirm_dialog.dart';
+import '../../home/widgets/timer/timer_setting_sheet.dart';
 
-class PlanSettingView extends StatelessWidget {
-  const PlanSettingView({super.key});
+Future<void> showTimerSettingSheet(
+    BuildContext context,
+    TimerViewModel vm,
+    ) async {
+  vm.beginEdit();
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-          title: const Text("기본 목표 설정"),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text("기본 타이머 시간 (분)",
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFFB58A53))),
-                    const SizedBox(height: 12),
-                    TextField(
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        hintText: "예: 60",
-                        filled: true,
-                        fillColor: Colors.white.withOpacity(0.7),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: AppActionButton(
-                    label: "저장하기",
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+  try {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.background,
+      // 상단 라운드 처리를 위한 모양 설정
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
       ),
+      builder: (_) {
+        return TimerSettingSheet(
+          onConfirm: (duration) async {
+            // 1. 타이머 VM에 값 전달
+            vm.setTarget(duration);
+
+            // 2. 로컬(SharedPreferences)에 기본값으로 저장
+            await SettingService().saveDefaultTargetTime(duration.inMinutes);
+
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('기본 목표가 ${duration.inMinutes}분으로 변경되었습니다.')),
+              );
+            }
+          },
+          onCancel: () async {
+            final ok = await showConfirmDialog(
+              context,
+              title: '취소하시겠습니까?',
+              message: '설정한 내용은 저장되지 않습니다.',
+              cancelText: '계속 설정',
+              confirmText: '취소',
+            );
+            // 취소 컨펌 시 시트 닫기
+            if (ok && context.mounted) Navigator.pop(context);
+          },
+        );
+      },
     );
+  } finally {
+    vm.endEdit();
   }
 }

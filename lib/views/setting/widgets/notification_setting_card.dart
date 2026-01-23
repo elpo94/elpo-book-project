@@ -20,7 +20,7 @@ class NotificationSettingCard extends StatelessWidget {
             SettingTile(
               icon: Icons.notifications_none_rounded,
               title: '알림 설정',
-              subtitle: '글쓰기 알림 시간 관리',
+              subtitle: '알림 시간 관리',
               onTap: () =>
                   showInfoDialog(
                     context,
