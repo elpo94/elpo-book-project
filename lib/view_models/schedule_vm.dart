@@ -29,7 +29,7 @@ class ScheduleVM extends ChangeNotifier {
   }
 
   void selectDay(DateTime selected, DateTime focused) {
-    selectedDay = CalendarItem.normalizeDate(selected);
+    selectedDay = selected;
     focusedDay = focused;
     notifyListeners();
   }

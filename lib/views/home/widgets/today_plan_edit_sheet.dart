@@ -30,7 +30,7 @@ void showTodayPlanEditSheet(BuildContext context, HomeViewModel vm) {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.foreground)),
                 const SizedBox(height: 24),
                 _buildInputLabel("오늘의 목표"),
-                _buildTextField(planController, "예: 소설 1장 집필", maxLength: 15),
+                _buildTextField(planController, "예: 소설 1장 집필", maxLength: 30),
                 const SizedBox(height: 16),
                 _buildInputLabel("목표 시간 (분)"),
                 _buildTextField(timeController, "예: 60", isNumber: true),

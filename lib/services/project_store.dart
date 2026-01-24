@@ -16,18 +16,20 @@ class ProjectStore extends ChangeNotifier {
   }
 
   // 2. 단일 데이터 업데이트
-  void updateSingleProject(ProjectModel updated) {
+  Future<bool> updateSingleProject(ProjectModel updated) async {
     final index = _projects.indexWhere((p) => p.id == updated.id);
     if (index != -1) {
       _projects[index] = updated;
       notifyListeners();
+      return true;
     }
+    return false;
   }
 
   // ✅ 3. 서버 데이터 가져오기 및 저장 통합 메소드
   Future<void> fetchAndStore() async {
     try {
-      await _service.fetchAndStore(this);
+      await _service.fetchAndStore(this, uid: '');
     } catch (e) {
       debugPrint("Store 데이터 동기화 실패: $e");
     }

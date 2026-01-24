@@ -1,38 +1,42 @@
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+// ✅ 모든 경로를 성주님의 프로젝트 구조에 맞게 재설정합니다.
 import '../../models/project.dart';
-import '../../services/project_service.dart';
+import '../../services/project_service.dart'; // 중복 해결된 깨끗한 서비스
 import '../../services/project_store.dart';
+import '../../services/auth_service.dart';   // 방금 정리한 인증 서비스
 import '../../views/project/widgets/project_status.dart';
 
 class ProjectViewModel extends ChangeNotifier {
+  // ✅ 빨간 줄 해결: 클래스들이 위 임포트를 통해 인식됩니다.
   final ProjectService _projectService = ProjectService();
-  final ProjectStore _projectStore; // 중앙 서류함을 주입받습니다.
+  final ProjectStore _projectStore; // 생성자에서 주입받음
+  final AuthService _authService = AuthService();
 
   bool _isLoading = false;
-  String _sortBy = 'createdAt';
+  final String _sortBy = 'createdAt';
 
-  // 이제 데이터는 내 리스트가 아니라 Store의 리스트를 보여줍니다.
   List<ProjectModel> get projects => _projectStore.projects;
   bool get isLoading => _isLoading;
 
-  // 생성자에서 Store를 전달받습니다. (Provider의 ProxyProvider 등 활용)
+  // 생성자: 'this._projectStore' 에러 해결
   ProjectViewModel(this._projectStore) {
     fetchProjects();
   }
-
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
   }
 
-  // 기존 getProjects 호출 대신 서비스의 fetchAndStore를 사용합니다.
+  // 1. 읽기: fetchAndStore 활용
   Future<void> fetchProjects() async {
+    final uid = _authService.currentUserId;
+    if (uid == null) return;
+
     _setLoading(true);
     try {
-      // 서비스가 데이터를 긁어와서 Store(서류함)에 자동으로 채워넣습니다.
-      await _projectService.fetchAndStore(_projectStore, sortBy: _sortBy);
+      await _projectService.fetchAndStore(_projectStore, uid: uid, sortBy: _sortBy);
     } catch (e) {
       debugPrint("데이터 로드 실패: $e");
     } finally {
@@ -40,13 +44,15 @@ class ProjectViewModel extends ChangeNotifier {
     }
   }
 
+  // 2. 추가: addProject 활용
   Future<void> addProject(ProjectModel newProject) async {
+    final uid = _authService.currentUserId;
+    if (uid == null) return;
+
     _setLoading(true);
     try {
-      // 1. 서버에 추가
-      await _projectService.createProject(newProject);
-      // 2. 추가 성공 후, 서비스가 서버 데이터를 가져와서 Store(서류함)에 붓게 합니다.
-      await _projectService.fetchAndStore(_projectStore);
+      await _projectService.addProject(newProject, uid: uid);
+      await fetchProjects();
     } catch (e) {
       debugPrint("추가 실패: $e");
     } finally {
@@ -54,6 +60,7 @@ class ProjectViewModel extends ChangeNotifier {
     }
   }
 
+  // 3. 전체 수정: updateProject 활용
   Future<void> updateProject({
     required String projectId,
     required String name,
@@ -64,8 +71,10 @@ class ProjectViewModel extends ChangeNotifier {
     required ProjectStatus status,
     required String memo,
   }) async {
+    final uid = _authService.currentUserId;
+    if (uid == null) return;
+
     try {
-      // 1. 서버에 보낼 데이터 뭉치 만들기
       final data = {
         'name': name,
         'description': description,
@@ -77,10 +86,7 @@ class ProjectViewModel extends ChangeNotifier {
         'updatedAt': FieldValue.serverTimestamp(),
       };
 
-      // 2. 서비스를 통해 서버 업데이트
-      await _projectService.updateProject(projectId, data);
-
-      // 3. 서버 성공 후 중앙 서류함(Store)의 데이터도 즉시 갱신 (스무스한 전환)
+      await _projectService.updateProject(uid, projectId, data);
       await fetchProjects();
     } catch (e) {
       debugPrint("프로젝트 업데이트 실패: $e");
@@ -88,36 +94,41 @@ class ProjectViewModel extends ChangeNotifier {
     }
   }
 
-  // 부분 업데이트 (상세 페이지용)
+  // 4. 부분 수정: updateProjectStatusAndMemo 활용
   Future<void> updateProjectPartially({
     required String projectId,
     required ProjectStatus status,
     required String memo,
   }) async {
-    try {
-      // 1. 서버 업데이트 시도
-      await _projectService.updateProjectStatusAndMemo(projectId, status, memo);
+    final uid = _authService.currentUserId;
+    if (uid == null) return;
 
-      // 2. 서버 성공 후 Store의 메모리 데이터만 즉시 교체 (스무스한 갈아끼우기)
+    try {
+      await _projectService.updateProjectStatusAndMemo(uid, projectId, status, memo);
+
       final updated = projects.firstWhere((p) => p.id == projectId).copyWith(
         status: status,
         memo: memo,
       );
-      _projectStore.updateSingleProject(updated);
+
+      if (await _projectStore.updateSingleProject(updated)) {
+        notifyListeners();
+      }
     } catch (e) {
       debugPrint("업데이트 실패: $e");
     }
   }
 
-  // 삭제 로직
+  // 5. 삭제: deleteProject 활용
   Future<void> deleteProject(String projectId) async {
+    final uid = _authService.currentUserId;
+    if (uid == null) return;
+
     try {
-      await _projectService.deleteProject(projectId);
-      await fetchProjects(); // 삭제 후 Store 최신화
+      await _projectService.deleteProject(uid, projectId);
+      await fetchProjects();
     } catch (e) {
       debugPrint("삭제 실패: $e");
     }
   }
-
-
 }
