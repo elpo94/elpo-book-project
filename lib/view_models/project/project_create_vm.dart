@@ -3,7 +3,7 @@ import '../../../models/project.dart';
 import '../../views/project/widgets/project_status.dart';
 
 class ProjectCreateViewModel extends ChangeNotifier {
-  // 1. 상태 관리 (데이터)
+  // 1. 상태 관리 (컨트롤러 및 날짜 데이터)
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final dailyGoalController = TextEditingController();
@@ -19,28 +19,67 @@ class ProjectCreateViewModel extends ChangeNotifier {
   final List<bool> selectedDays = List.generate(7, (_) => false);
   final List<String> days = ['월', '화', '수', '목', '금', '토', '일'];
 
-  // 2. 비즈니스 로직: 날짜 범위 설정 (하나로 통합) ⭐
+  // 2. 날짜 범위 설정
   void setDateRange(DateTimeRange range) {
     _startDate = range.start;
     _endDate = range.end;
-
-    // 화면에 표시될 텍스트 업데이트
     periodController.text = "${_formatDate(range.start)} ~ ${_formatDate(range.end)}";
-
     notifyListeners();
   }
 
-  // 3. 비즈니스 로직: 요일 선택
+  // 3. 요일 선택 및 보정 로직
   void toggleDay(int index) {
     selectedDays[index] = !selectedDays[index];
     notifyListeners();
   }
 
+  void ensureDaysSelected() {
+    final bool hasSelection = selectedDays.any((element) => element == true);
+
+    if (!hasSelection) {
+      for (int i = 0; i < selectedDays.length; i++) {
+        selectedDays[i] = true;
+      }
+      notifyListeners();
+    }
+  }
+
+  // 4. 프로젝트 모델 생성 (핵심 로직 통합)
+  ProjectModel? createProjectModel() {
+    ensureDaysSelected();
+
+    if (titleController.text.isEmpty || _startDate == null || _endDate == null) {
+      return null;
+    }
+
+    return ProjectModel(
+      id: '', // Firestore 저장 시 생성됨
+      name: titleController.text,
+      description: descriptionController.text,
+      startDate: _startDate!,
+      endDate: _endDate!,
+      selectedDays: List.from(selectedDays), // 🔴 추가된 요일 데이터
+      plans: [dailyGoalController.text],
+      status: ProjectStatus.planned, // 'upcoming' 대신 모델의 'planned' 사용
+      createdAt: DateTime.now(),    // 🔴 필수 생성일자 추가
+      memo: memoController.text,
+      isFavorite: false,
+    );
+  }
+
+  // 5. 유틸리티 및 초기화
   String _formatDate(DateTime date) {
     return "${date.year}.${date.month.toString().padLeft(2, '0')}.${date.day.toString().padLeft(2, '0')}";
   }
 
-  // 4. 비즈니스 로직: 초기화
+  void loadProjectDays(List<bool> projectDays) {
+    // 기존 리스트를 덮어쓰지 않고 값만 복사하여 독립성 유지
+    for (int i = 0; i < selectedDays.length; i++) {
+      selectedDays[i] = projectDays[i];
+    }
+    notifyListeners();
+  }
+
   void clearFields() {
     titleController.clear();
     descriptionController.clear();
@@ -53,23 +92,6 @@ class ProjectCreateViewModel extends ChangeNotifier {
       selectedDays[i] = false;
     }
     notifyListeners();
-  }
-
-  // 5. 비즈니스 로직: 프로젝트 모델 생성 ⭐ (에러 수정됨)
-  ProjectModel? createProjectModel() {
-    if (titleController.text.isEmpty || _startDate == null || _endDate == null) return null;
-
-    return ProjectModel(
-      id: '', // 👈 Firestore가 생성할 것이므로 일단 비워둡니다.
-      name: titleController.text,
-      description: descriptionController.text,
-      startDate: _startDate!,
-      endDate: _endDate!,
-      status: ProjectStatus.planned,
-      plans: [dailyGoalController.text],
-      createdAt: DateTime.now(),
-      memo: memoController.text,
-    );
   }
 
   @override

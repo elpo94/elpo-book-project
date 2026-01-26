@@ -23,20 +23,16 @@ Future<void> showTimerSettingSheet(
       builder: (sheetContext) {
         return TimerSettingSheet(
           onConfirm: (duration) async {
-            // 1. 시트를 즉시 닫아 내비게이션 락 방지
             Navigator.pop(sheetContext);
 
-            // 2. 뷰모델 상태 업데이트 (공통)
             vm.setTarget(duration);
 
-            // 3. 진입 경로에 따른 데이터 저장 (논리 분리)
             if (isSystemSetting) {
               await SettingService().saveSystemDefault(duration.inSeconds);
             } else {
               await SettingService().saveCurrentSession(duration.inSeconds);
             }
 
-            // 4. 사용자 피드백 안내 (안정적인 부모 context 사용)
             if (context.mounted) {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(

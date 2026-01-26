@@ -70,6 +70,7 @@ class ProjectViewModel extends ChangeNotifier {
     required List<String> plans,
     required ProjectStatus status,
     required String memo,
+    required List<bool> selectedDays,
   }) async {
     final uid = _authService.currentUserId;
     if (uid == null) return;
@@ -83,6 +84,7 @@ class ProjectViewModel extends ChangeNotifier {
         'plans': plans,
         'status': status.name,
         'memo': memo,
+        'selectedDays': selectedDays,
         'updatedAt': FieldValue.serverTimestamp(),
       };
 

@@ -7,6 +7,7 @@ class ProjectModel {
   final String description;
   final DateTime startDate;
   final DateTime endDate;
+  final List<bool> selectedDays;
   final List<String> plans;
   final ProjectStatus status;
   final DateTime createdAt;
@@ -19,6 +20,7 @@ class ProjectModel {
     required this.description,
     required this.startDate,
     required this.endDate,
+    required this.selectedDays,
     required this.plans,
     required this.status,
     required this.createdAt,
@@ -33,6 +35,7 @@ class ProjectModel {
       description: '',
       startDate: DateTime.now(),
       endDate: DateTime.now().add(const Duration(days: 30)),
+      selectedDays: List.generate(7, (_) => true),
       status: ProjectStatus.planned,
       plans: [],
       createdAt: DateTime.now(),
@@ -58,6 +61,9 @@ class ProjectModel {
       endDate: map['endDate'] is Timestamp
           ? (map['endDate'] as Timestamp).toDate()
           : DateTime.tryParse(map['endDate'] ?? '') ?? DateTime.now(),
+      selectedDays: map['selectedDays'] != null
+          ? List<bool>.from(map['selectedDays'])
+          : List.generate(7, (_) => true),
       plans: List<String>.from(map['plans'] ?? []),
       status: ProjectStatus.values.firstWhere(
             (e) => e.name == map['status'],
@@ -102,12 +108,12 @@ class ProjectModel {
       description: description ?? this.description,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
+      selectedDays: selectedDays,
+      createdAt: this.createdAt,
       plans: plans ?? this.plans,
       status: status ?? this.status,
-      createdAt: this.createdAt,
-      // 생성일은 유지
       isFavorite: isFavorite ?? this.isFavorite,
-      memo: memo ?? this.memo, // ⭐ memo 값 할당
+      memo: memo ?? this.memo,
     );
   }
 }

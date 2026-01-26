@@ -8,7 +8,7 @@ class ScheduleLegend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12), // 캘린더와 리스트 사이 적절한 간격
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: ProjectDisplayStatus.values.map((status) {

@@ -29,7 +29,7 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
 
     if (!_isInitialized) {
       _currentStatus = project.status;
-      _memoController.text = project.memo; // 메모 데이터 연동
+      _memoController.text = project.memo;
       _isInitialized = true;
     }
 
@@ -77,6 +77,8 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
                     const SizedBox(height: 24),
                     _infoRow('하루 목표', project.plans.isNotEmpty ? project.plans.first : '설정 없음'),
                     _infoRow('작성 기간', "${_formatDate(project.startDate)} ~ ${_formatDate(project.endDate)}"),
+                    _infoRow('반복 요일', _formatSelectedDays(project.selectedDays)),
+
                     const SizedBox(height: 32),
                     if (isOverdue) _buildOverdueWarning(),
                     const Text('프로젝트 상태', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
@@ -97,6 +99,18 @@ class _ProjectDetailViewState extends State<ProjectDetailView> {
         ),
       ),
     );
+  }
+  String _formatSelectedDays(List<bool> days) {
+    if (!days.contains(false)) return "매일"; // 모두 true일 때만 매일
+
+    const weekDayNames = ['월', '화', '수', '목', '금', '토', '일'];
+    List<String> result = [];
+
+    for (int i = 0; i < days.length; i++) {
+      if (days[i]) result.add(weekDayNames[i]);
+    }
+
+    return result.isEmpty ? "선택 없음" : result.join(", ");
   }
 
   Widget _buildProjectHeader(String title, String desc, bool isOverdue) {

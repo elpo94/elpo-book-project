@@ -90,7 +90,7 @@ class _TimerSettingSheetState extends State<TimerSettingSheet> {
 
     return SafeArea(
       child: SizedBox(
-        height: media.size.height * 0.45,
+        height: media.size.height * 0.40,
         child: Column(
           children: [
             const SizedBox(height: 8),
@@ -169,6 +169,7 @@ class _PresetChip extends StatelessWidget {
       label: Text(
         label,
         style: const TextStyle(
+          fontSize: 12,
           fontWeight: FontWeight.w600,
         ),
       ),

@@ -22,9 +22,10 @@ class PlanSettingCard extends StatelessWidget {
             SettingTile(
               icon: Icons.tune_rounded,
               title: '기본 목표 설정',
-              subtitle: '현재 목표: ${timerVM.formattedTargetDuration}',
-              onTap: () {
-                showTimerSettingSheet(context, timerVM, isSystemSetting: true);
+              subtitle: '현재 설정: ${timerVM.formattedSystemDefault}',
+              onTap: () async {
+                await showTimerSettingSheet(context, timerVM, isSystemSetting: true);
+                timerVM.setupDuration();
               },
             ),
           ],

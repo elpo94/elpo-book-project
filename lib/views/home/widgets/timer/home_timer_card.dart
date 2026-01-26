@@ -26,14 +26,20 @@ class HomeTimerCard extends StatelessWidget {
         child: Card(
           color: AppColors.surface,
           elevation: 1,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
             onTap: () async {
               if (vm.isEditing) return;
               if (!vm.hasTarget || isZero) {
                 // 0초일 때 클릭 시 설정 시트 호출
-                await showTimerSettingSheet(context, vm, isSystemSetting: false);
+                await showTimerSettingSheet(
+                  context,
+                  vm,
+                  isSystemSetting: false,
+                );
                 return;
               }
               onTap?.call();
@@ -53,20 +59,20 @@ class HomeTimerCard extends StatelessWidget {
                     ),
                   ),
 
-                    const SizedBox(height: 16),
-                    TimerControls(
-                      onReset: () async {
-                        final ok = await showConfirmDialog(
-                          context,
-                          title: '타이머를 초기화할까요?',
-                          message: '누적된 시간이 00:00:00으로 돌아갑니다.',
-                          cancelText: '취소',
-                          //confirmText: '초기화',
-                        );
-                        if (ok) vm.reset();
-                      },
-                    ),
-                  ],
+                  const SizedBox(height: 16),
+                  TimerControls(
+                    onReset: () async {
+                      final ok = await showConfirmDialog(
+                        context,
+                        title: '타이머를 초기화할까요?',
+                        message: '누적된 시간이 00:00:00으로 돌아갑니다.',
+                        cancelText: '취소',
+                        //confirmText: '초기화',
+                      );
+                      if (ok) vm.reset();
+                    },
+                  ),
+                ],
               ),
             ),
           ),

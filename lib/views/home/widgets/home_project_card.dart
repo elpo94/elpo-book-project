@@ -16,8 +16,22 @@ class HomeProjectCard extends StatelessWidget {
     final elapsedDays = DateTime.now().difference(project.startDate).inDays + 1;
     final progress = (elapsedDays / totalDays).clamp(0.0, 1.0);
 
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day); // 시간 제외 날짜만 계산
+    final endDay = DateTime(project.endDate.year, project.endDate.month, project.endDate.day);
+
+    final difference = endDay.difference(today).inDays;
+
+    String dDayText;
+    if (difference > 0) {
+      dDayText = "D-$difference";
+    } else if (difference == 0) {
+      dDayText = "D-Day";
+    } else {
+      dDayText = "종료";
+    }
+
     return InkWell(
-      // ✅ 외부에서 넘겨받은 onTap을 연결
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Container(
@@ -52,9 +66,14 @@ class HomeProjectCard extends StatelessWidget {
                   "${_format(project.startDate)} - ${_format(project.endDate)}",
                   style: const TextStyle(fontSize: 11, color: AppColors.mutedOn),
                 ),
+                // ✅ [수정] % 대신 D-Day 텍스트 노출
                 Text(
-                  "${(progress * 100).toInt()}%",
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.buttonPrimaryBg),
+                  dDayText,
+                  style: const TextStyle(
+                      fontSize: 12, // D-Day는 조금 더 잘 보이게 살짝 키웠습니다.
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.buttonPrimaryBg
+                  ),
                 ),
               ],
             ),

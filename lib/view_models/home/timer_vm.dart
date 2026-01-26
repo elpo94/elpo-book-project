@@ -8,6 +8,9 @@ class TimerViewModel extends ChangeNotifier {
   Duration targetDuration = Duration.zero;
   Duration remaining = Duration.zero;
 
+  Duration _systemDefaultDuration = Duration.zero;
+  String get formattedSystemDefault => _formatToKorean(_systemDefaultDuration);
+
   bool isRunning = false;
   Timer? _ticker;
 
@@ -52,18 +55,26 @@ class TimerViewModel extends ChangeNotifier {
   // ---------------------------------------------------------------------------
 
   Future<void> setupDuration() async {
+    final int systemDefault = await _timerservice.getSystemDefault();
+    _systemDefaultDuration = Duration(seconds: systemDefault);
+
     int? sessionTime = await _timerservice.getCurrentSession();
 
     if (sessionTime != null) {
       targetDuration = Duration(seconds: sessionTime);
     } else {
-      final int systemDefault = await _timerservice.getSystemDefault();
-      targetDuration = Duration(seconds: systemDefault);
+      targetDuration = _systemDefaultDuration;
     }
 
     remaining = targetDuration;
     notifyListeners();
   }
+
+  void updateSystemDefault(Duration newDefault) {
+    _systemDefaultDuration = newDefault;
+    notifyListeners();
+  }
+
   void beginEdit() {
     _isEditing = true;
     notifyListeners();
