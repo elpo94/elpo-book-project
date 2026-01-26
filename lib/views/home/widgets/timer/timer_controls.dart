@@ -28,7 +28,7 @@ class TimerControls extends StatelessWidget {
         children: [
           TimerPrimaryButton(compact: compact),
           const SizedBox(width: 12),
-          if (vm.hasTarget)
+          if (vm.hasTarget && !(vm.remaining == Duration.zero))
             TimerResetButton(
               compact: compact,
               onPressed: onReset,

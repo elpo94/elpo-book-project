@@ -57,7 +57,6 @@ class AppActionButton extends StatelessWidget {
         );
 
       case AppButtonStyle.danger:
-      // (지금은 거의 안 쓰는 게 맞음)
         return FilledButton(
           onPressed: onPressed,
           style: FilledButton.styleFrom(

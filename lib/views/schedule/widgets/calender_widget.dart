@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// TableCalendar의 자체 isSameDay를 사용하도록 변경
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../models/calendar_item.dart';
@@ -74,6 +73,7 @@ class CalendarWidget extends StatelessWidget {
           cellMargin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
           selectedTextStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
           todayTextStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+          rangeHighlightColor: AppColors.error,
         ),
 
         rowHeight: 50,

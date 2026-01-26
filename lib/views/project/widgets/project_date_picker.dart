@@ -18,6 +18,7 @@ Future<DateTimeRange?> showAppDateRangePicker(BuildContext context) async {
             onPrimary: Colors.white,
             surface: AppColors.background,
             onSurface: AppColors.foreground,
+            secondaryContainer: Color(0xFFE1D5C7),
           ),
           /// TODO: 바꿔야하나?
           textButtonTheme: TextButtonThemeData(

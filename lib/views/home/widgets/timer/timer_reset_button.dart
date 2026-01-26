@@ -19,7 +19,7 @@ class TimerResetButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppActionButton(
-      label: 'Reset',
+      label: '초기화',
       onPressed: onPressed,
       padding: _padding,
       style: AppButtonStyle.outline, // ✅ 핵심

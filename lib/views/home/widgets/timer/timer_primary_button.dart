@@ -34,7 +34,7 @@ class TimerPrimaryButton extends StatelessWidget {
     // 타이머가 멈춰있는 경우 (Start 노출)
     if (!vm.isRunning) {
       return AppActionButton(
-        label: 'Start',
+        label: '시작',
         padding: _pad(),
         style: AppButtonStyle.primary,
         // 이미 위에서 0초 체크를 했으므로 여기서는 안전하게 start를 연결합니다.
@@ -44,7 +44,7 @@ class TimerPrimaryButton extends StatelessWidget {
 
     // 타이머가 돌아가는 경우 (Stop 노출)
     return AppActionButton(
-      label: 'Stop',
+      label: '중지',
       padding: _pad(),
       style: AppButtonStyle.primary,
       onPressed: vm.stop,

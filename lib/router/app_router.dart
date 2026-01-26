@@ -11,6 +11,7 @@ import '../views/project/widgets/project_detail_view.dart';
 import '../views/schedule/schedule_view.dart';
 import '../views/setting/setting_view.dart';
 
+import '../views/setting/widgets/app_info_view.dart';
 import 'main_shell.dart';
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -54,6 +55,11 @@ final GoRouter appRouter = GoRouter(
       path: '/timer',
       parentNavigatorKey: _rootNavigatorKey,
       builder: (_, __) => const TimerExpandView(),
+    ),
+    GoRoute(
+      path: '/app-info',
+      parentNavigatorKey: _rootNavigatorKey, // Shell 밖에서 띄우기
+      builder: (context, state) => const AppInfoView(),
     ),
   ],
 );
