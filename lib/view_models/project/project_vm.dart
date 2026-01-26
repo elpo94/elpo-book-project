@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// ✅ 모든 경로를 성주님의 프로젝트 구조에 맞게 재설정합니다.
+
 import '../../models/project.dart';
 import '../../services/project_service.dart'; // 중복 해결된 깨끗한 서비스
 import '../../services/project_store.dart';

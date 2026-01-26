@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/project.dart';
+import '../../services/auth_service.dart';
 import '../../services/project_service.dart';
 import '../../services/project_store.dart';
 import '../../views/project/widgets/project_status.dart';
@@ -9,6 +10,7 @@ import '../../views/project/widgets/project_status.dart';
 class HomeViewModel extends ChangeNotifier {
   final ProjectStore _projectStore;
   final ProjectService _projectService = ProjectService();
+  final AuthService _authService = AuthService();
 
   String _todayPlan = "오늘의 목표를 설정하세요";
   int _targetTime = 0;
@@ -17,23 +19,25 @@ class HomeViewModel extends ChangeNotifier {
   //
   HomeViewModel(this._projectStore) {
     _projectStore.addListener(_onStoreChanged);
-
-    _projectStore.fetchAndStore();
     _loadAllData();
   }
+
+  String get todayPlan => _todayPlan;
+  int get targetTime => _targetTime;
+  String get planMemo => _planMemo;
 
   void _onStoreChanged() {
     notifyListeners();
   }
 
   Future<void> _initialize() async {
-    await _projectStore.fetchAndStore(); // 여기서 await를 사용합니다.
-    await _loadAllData();
-  }
+    final String? uid = _authService.currentUserId;
 
-  String get todayPlan => _todayPlan;
-  int get targetTime => _targetTime;
-  String get planMemo => _planMemo;
+    if (uid != null && uid.isNotEmpty) {
+      await _projectStore.fetchAndStore(uid);
+      _loadAllData();
+    }
+  }
 
   void _onProjectStoreChanged() {
     notifyListeners(); //

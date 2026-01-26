@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../theme/app_colors.dart';
+
 
 class TimerSettingSheet extends StatefulWidget {
   final void Function(Duration) onConfirm;
@@ -68,7 +70,7 @@ class _TimerSettingSheetState extends State<TimerSettingSheet> {
       scrollController: ctrl,
       itemExtent: 44,
       useMagnifier: true,
-      magnification: 1.08,
+      magnification: 1.1,
       onSelectedItemChanged: (_) => _onWheelChanged(),
       children: List.generate(
         count,
@@ -141,7 +143,6 @@ class _TimerSettingSheetState extends State<TimerSettingSheet> {
                           ? null
                           : () {
                         widget.onConfirm(_tempDuration);
-                        Navigator.pop(context);
                       },
                       child: const Text('설정'),
                     ),

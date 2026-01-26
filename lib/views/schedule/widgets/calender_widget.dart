@@ -35,18 +35,20 @@ class CalendarWidget extends StatelessWidget {
         focusedDay: vm.focusedDay,
         availableGestures: AvailableGestures.horizontalSwipe,
 
-        // ✅ VM의 변수와 TableCalendar의 isSameDay 연결
+        // ✅ 현재 선택된 날짜와 달력의 날짜가 같은지 비교
         selectedDayPredicate: (day) => isSameDay(vm.selectedDay, day),
 
+        // ✅ 날짜 선택 시 VM의 함수를 호출하여 상태를 업데이트
         onDaySelected: (selectedDay, focusedDay) {
           vm.selectDay(selectedDay, focusedDay);
         },
 
+        // ✅ 페이지를 넘길 때도 포커스된 날짜를 동기화
         onPageChanged: (focusedDay) {
-          // ✅ 뷰모델에 명시적인 함수가 없다면 직접 할당 가능 (혹은 VM에 함수 추가)
           vm.selectDay(vm.selectedDay, focusedDay);
         },
 
+        // ✅ VM의 itemsOf를 통해 각 날짜에 '점'을 찍을 데이터를 가져옴
         eventLoader: vm.itemsOf,
 
         headerStyle: HeaderStyle(
@@ -104,6 +106,7 @@ class CalendarWidget extends StatelessWidget {
           markerBuilder: (context, day, events) {
             if (events.isEmpty) return const SizedBox.shrink();
 
+            // 최대 3개까지 상태에 따른 색상 마커를 표시합니다.
             final colors = events.take(3).map((e) {
               final display = effectiveStatus(
                 status: e.status,
@@ -118,19 +121,12 @@ class CalendarWidget extends StatelessWidget {
               right: 0,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: colors
-                    .map(
-                      (c) => Container(
-                    width: 5,
-                    height: 5,
-                    margin: const EdgeInsets.symmetric(horizontal: 2),
-                    decoration: BoxDecoration(
-                      color: c,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                )
-                    .toList(),
+                children: colors.map((c) => Container(
+                  width: 5,
+                  height: 5,
+                  margin: const EdgeInsets.symmetric(horizontal: 2),
+                  decoration: BoxDecoration(color: c, shape: BoxShape.circle),
+                )).toList(),
               ),
             );
           },

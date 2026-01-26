@@ -23,83 +23,86 @@ class MainShell extends StatelessWidget {
         !location.contains('detail') &&
         !location.contains('create');
 
-    return Scaffold(
-      extendBody: false,
-
-      appBar: AppBar(
-        title: const Text('사부작'),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(
-            height: 1,
-            color: AppColors.border.withOpacity(0.6),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        extendBody: false,
+      
+        appBar: AppBar(
+          title: const Text('사부작'),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1),
+            child: Container(
+              height: 1,
+              color: AppColors.border.withOpacity(0.6),
+            ),
           ),
         ),
-      ),
-
-
-      body: Material(
-        color: AppColors.background,
-        child: navigationShell,
-      ),
-
-      floatingActionButton: showProjectFab
-          ? FloatingActionButton(
-        onPressed: () => context.push('/project/create'),
-        shape: const CircleBorder(),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        elevation: 3,
-        child: Icon(
-          Icons.edit,
-          color: AppColors.foreground,
-          size: 30,
+      
+      
+        body: Material(
+          color: AppColors.background,
+          child: navigationShell,
         ),
-      )
-          : null,
-
-      bottomNavigationBar: Theme(
-        data: Theme.of(context).copyWith(
-          splashFactory: NoSplash.splashFactory,
-          highlightColor: Colors.transparent,
-        ),
-        child: BottomNavigationBar(
-          enableFeedback: false,
-          type: BottomNavigationBarType.fixed,
-
-          /// ⭐ URL이 아니라 Shell 상태
-          currentIndex: currentIndex,
-
-          /// ⭐ context.go() 제거
-          onTap: (index) {
-            navigationShell.goBranch(
-              index,
-              initialLocation: index == currentIndex,
-            );
-          },
-
-          selectedItemColor: AppColors.foreground,
-          unselectedItemColor: AppColors.foreground.withOpacity(0.45),
-
-          selectedIconTheme: const IconThemeData(size: 30),
-          unselectedIconTheme: const IconThemeData(size: 24),
-
-          selectedLabelStyle: const TextStyle(
-            fontWeight: FontWeight.w800,
-            fontSize: 12,
+      
+        floatingActionButton: showProjectFab
+            ? FloatingActionButton(
+          onPressed: () => context.push('/project/create'),
+          shape: const CircleBorder(),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          elevation: 3,
+          child: Icon(
+            Icons.edit,
+            color: AppColors.foreground,
+            size: 30,
           ),
-          unselectedLabelStyle: const TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 11,
+        )
+            : null,
+      
+        bottomNavigationBar: Theme(
+          data: Theme.of(context).copyWith(
+            splashFactory: NoSplash.splashFactory,
+            highlightColor: Colors.transparent,
           ),
-
-          iconSize: 26,
-
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-            BottomNavigationBarItem(icon: Icon(Icons.book), label: '프로젝트'),
-            BottomNavigationBarItem(icon: Icon(Icons.list), label: '일정'),
-            BottomNavigationBarItem(icon: Icon(Icons.settings), label: '설정'),
-          ],
+          child: BottomNavigationBar(
+            enableFeedback: false,
+            type: BottomNavigationBarType.fixed,
+      
+            /// ⭐ URL이 아니라 Shell 상태
+            currentIndex: currentIndex,
+      
+            /// ⭐ context.go() 제거
+            onTap: (index) {
+              navigationShell.goBranch(
+                index,
+                initialLocation: index == currentIndex,
+              );
+            },
+      
+            selectedItemColor: AppColors.foreground,
+            unselectedItemColor: AppColors.foreground.withOpacity(0.45),
+      
+            selectedIconTheme: const IconThemeData(size: 30),
+            unselectedIconTheme: const IconThemeData(size: 24),
+      
+            selectedLabelStyle: const TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 12,
+            ),
+            unselectedLabelStyle: const TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 11,
+            ),
+      
+            iconSize: 26,
+      
+            items: const [
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
+              BottomNavigationBarItem(icon: Icon(Icons.book), label: '프로젝트'),
+              BottomNavigationBarItem(icon: Icon(Icons.list), label: '일정'),
+              BottomNavigationBarItem(icon: Icon(Icons.settings), label: '설정'),
+            ],
+          ),
         ),
       ),
     );

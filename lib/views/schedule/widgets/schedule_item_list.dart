@@ -5,7 +5,13 @@ import '../../../view_models/schedule/schedule_vm.dart';
 import 'schedule_item_card.dart';
 
 class ScheduleItemList extends StatelessWidget {
-  const ScheduleItemList({super.key});
+  // ✅ 1. 외부(ScheduleView)에서 클릭 시 동작을 정의할 수 있게 인자를 추가합니다.
+  final Function(String projectId) onCardTap;
+
+  const ScheduleItemList({
+    super.key,
+    required this.onCardTap, // 필수 인자로 설정
+  });
 
   @override
   Widget build(BuildContext context) {

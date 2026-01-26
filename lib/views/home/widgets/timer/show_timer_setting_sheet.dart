@@ -1,24 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:sabujak_application/views/home/widgets/timer/timer_setting_sheet.dart';
+import '../../../../services/timer_setting_service.dart';
 import '../../../../theme/app_colors.dart';
 import '../../../../view_models/home/timer_vm.dart';
 import '../../../../widgets/confirm_dialog.dart';
-import 'timer_setting_sheet.dart';
 
 Future<void> showTimerSettingSheet(
     BuildContext context,
-    TimerViewModel vm,
-    ) async {
+    TimerViewModel vm, {
+      required bool isSystemSetting,
+    }) async {
   vm.beginEdit();
 
   try {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      barrierColor: Colors.transparent,
       backgroundColor: AppColors.background,
-      builder: (_) {
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      ),
+      builder: (sheetContext) {
         return TimerSettingSheet(
-          onConfirm: vm.setTarget,
+          onConfirm: (duration) async {
+            // 1. 시트를 즉시 닫아 내비게이션 락 방지
+            Navigator.pop(sheetContext);
+
+            // 2. 뷰모델 상태 업데이트 (공통)
+            vm.setTarget(duration);
+
+            // 3. 진입 경로에 따른 데이터 저장 (논리 분리)
+            if (isSystemSetting) {
+              await SettingService().saveSystemDefault(duration.inSeconds);
+            } else {
+              await SettingService().saveCurrentSession(duration.inSeconds);
+            }
+
+            // 4. 사용자 피드백 안내 (안정적인 부모 context 사용)
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(isSystemSetting
+                      ? '기본 목표 시간이 변경되었습니다.'
+                      : '타이머 시간이 설정되었습니다.'),
+                  duration: const Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+          },
           onCancel: () async {
             final ok = await showConfirmDialog(
               context,
@@ -27,7 +58,7 @@ Future<void> showTimerSettingSheet(
               cancelText: '계속 설정',
               confirmText: '취소',
             );
-            if (ok && context.mounted) Navigator.pop(context);
+            if (ok && context.mounted) Navigator.pop(sheetContext);
           },
         );
       },

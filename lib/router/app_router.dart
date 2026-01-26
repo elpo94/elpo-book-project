@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../views/home/home_view.dart';
-import '../views/home/edit_plan_view.dart';
 import '../views/home/widgets/timer/timer_expand_view.dart';
 
 import '../views/project/project_view.dart';

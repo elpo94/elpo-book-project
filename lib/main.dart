@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:sabujak_application/services/project_store.dart';
+import 'package:sabujak_application/services/timer_setting_service.dart';
 import 'package:sabujak_application/view_models/home/timer_vm.dart';
 import 'package:sabujak_application/view_models/project/project_create_vm.dart';
 import 'package:sabujak_application/view_models/project/project_vm.dart';
@@ -16,6 +17,7 @@ import 'theme/app_theme.dart';
 //파이어베이스
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:sabujak_application/services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +26,9 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  final authService = AuthService();
+  await authService.signInAnonymously();
+  final settingService = SettingService();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
@@ -31,6 +36,9 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        //로그인
+        Provider(create: (_) => authService),
+
         // 서류함
         ChangeNotifierProvider(create: (_) => ProjectStore()),
 
@@ -49,7 +57,7 @@ void main() async {
           update: (context, store, previous) => previous ?? ScheduleVM(store),
         ),
 
-        ChangeNotifierProvider(create: (_) => TimerViewModel()),
+        ChangeNotifierProvider(create: (_) => TimerViewModel(settingService)),
         ChangeNotifierProvider(create: (_) => ProjectCreateViewModel()),
       ],
       child: const SabujakApp(),
@@ -78,3 +86,4 @@ class SabujakApp extends StatelessWidget {
     );
   }
 }
+

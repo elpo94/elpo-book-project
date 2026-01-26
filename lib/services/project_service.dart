@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sabujak_application/services/project_store.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/project.dart';
 import '../views/project/widgets/project_status.dart';
 
@@ -15,7 +16,7 @@ class ProjectService {
 
   // 1. 추가 (addProject로 통일)
   Future<void> addProject(ProjectModel project, {required String uid}) async {
-    await _getProjectRef(uid).doc(project.id).set(project.toMap());
+    await _getProjectRef(uid).doc().set(project.toMap());
   }
 
   // 2. 읽기 (fetchAndStore로 통일)
@@ -43,5 +44,23 @@ class ProjectService {
   // 5. 삭제 (deleteProject)
   Future<void> deleteProject(String uid, String projectId) async {
     await _getProjectRef(uid).doc(projectId).delete();
+  }
+
+  // ✅ 6. 전체 데이터 초기화 (신규 추가)
+  Future<void> clearAllUserData(String uid, ProjectStore store) async {
+    // 1️⃣ Firestore 데이터 일괄 삭제
+    final snapshot = await _getProjectRef(uid).get();
+    final batch = _db.batch();
+    for (var doc in snapshot.docs) {
+      batch.delete(doc.reference);
+    }
+    await batch.commit();
+
+    // 2️⃣ 로컬 설정값(SharedPreferences) 전체 삭제
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear(); // 👈 오늘의 목표, 타이머 기본값 등이 모두 날아갑니다.
+
+    // 3️⃣ 메모리(ProjectStore) 동기화
+    store.updateProjects([]);
   }
 }

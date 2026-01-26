@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sabujak_application/views/home/widgets/home_project_section.dart';
 import 'package:sabujak_application/views/home/widgets/home_selection.dart';
@@ -19,7 +20,9 @@ class HomeView extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
-        HomeTimerCard(onTap: () {}),
+        HomeTimerCard(
+          onTap: () => context.push('/timer'),
+        ),
         const SizedBox(height: 24),
 
         const HomeSection(title: '오늘 목표', child: TodayPlanCard()),

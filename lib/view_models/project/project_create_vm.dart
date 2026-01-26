@@ -57,11 +57,10 @@ class ProjectCreateViewModel extends ChangeNotifier {
 
   // 5. 비즈니스 로직: 프로젝트 모델 생성 ⭐ (에러 수정됨)
   ProjectModel? createProjectModel() {
-    // _selectedDateRange 대신 실제 저장된 _startDate를 체크합니다.
     if (titleController.text.isEmpty || _startDate == null || _endDate == null) return null;
 
     return ProjectModel(
-      id: '',
+      id: '', // 👈 Firestore가 생성할 것이므로 일단 비워둡니다.
       name: titleController.text,
       description: descriptionController.text,
       startDate: _startDate!,
@@ -69,7 +68,7 @@ class ProjectCreateViewModel extends ChangeNotifier {
       status: ProjectStatus.planned,
       plans: [dailyGoalController.text],
       createdAt: DateTime.now(),
-      memo: memoController.text, // 메모 필드 반영
+      memo: memoController.text,
     );
   }
 
