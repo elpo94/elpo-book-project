@@ -10,7 +10,7 @@ import '../../home/widgets/timer/timer_setting_sheet.dart';
 Future<void> showTimerSettingSheet(
     BuildContext context,
     TimerViewModel vm, {
-      required bool isSystemSetting, // [추가] 필수 매개변수
+      required bool isSystemSetting,
     }) async {
   vm.beginEdit();
 
@@ -22,25 +22,25 @@ Future<void> showTimerSettingSheet(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
       ),
-      builder: (sheetContext) { // [수정] 언더바(_) 대신 sheetContext로 명시
+      builder: (sheetContext) {
         return TimerSettingSheet(
+          // ⭐ [수정 핵심] 시트가 열릴 때 보여줄 초기 시간을 주입합니다.
+          // 설정 페이지라면 시스템 기본값을, 홈 화면이라면 현재 세션의 타겟 시간을 보여줍니다.
+          initialDuration: isSystemSetting ? vm.systemDefaultDuration : vm.targetDuration,
+
           onConfirm: (duration) async {
-            // 1. 시트를 즉시 닫아 내비게이션 락 방지
             Navigator.pop(sheetContext);
 
-            // 2. 뷰모델 상태 업데이트 (현재 세션 반영)
             vm.setTarget(duration);
 
-            // 3. 진입 경로에 따른 물리 저장소 분리 (SettingService)
             if (isSystemSetting) {
-              // 설정 페이지 진입 시: 앱 전체 기본 목표값 변경
               await SettingService().saveSystemDefault(duration.inSeconds);
+              // 설정 변경 후 뷰모델의 시스템 기본값 상태도 업데이트해줍니다.
+              vm.updateSystemDefault(duration);
             } else {
-              // 홈 화면 진입 시: 이번 세션에만 사용할 임시 시간 저장
               await SettingService().saveCurrentSession(duration.inSeconds);
             }
 
-            // 4. 사용자 피드백 안내
             if (context.mounted) {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(
@@ -62,14 +62,12 @@ Future<void> showTimerSettingSheet(
               cancelText: '계속 설정',
               confirmText: '취소',
             );
-            // 시트 컨텍스트를 사용하여 닫기
             if (ok && context.mounted) Navigator.pop(sheetContext);
           },
         );
       },
     );
   } finally {
-    // 시트가 닫히면 항상 편집 상태 종료
     vm.endEdit();
   }
 }

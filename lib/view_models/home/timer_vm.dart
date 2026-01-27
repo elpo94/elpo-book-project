@@ -9,6 +9,7 @@ class TimerViewModel extends ChangeNotifier {
   Duration remaining = Duration.zero;
 
   Duration _systemDefaultDuration = Duration.zero;
+  Duration get systemDefaultDuration => _systemDefaultDuration;
   String get formattedSystemDefault => _formatToKorean(_systemDefaultDuration);
 
   bool isRunning = false;

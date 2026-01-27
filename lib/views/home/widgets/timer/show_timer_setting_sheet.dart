@@ -22,6 +22,8 @@ Future<void> showTimerSettingSheet(
       ),
       builder: (sheetContext) {
         return TimerSettingSheet(
+          //타겟 시간주입
+          initialDuration: vm.targetDuration,
           onConfirm: (duration) async {
             Navigator.pop(sheetContext);
 
