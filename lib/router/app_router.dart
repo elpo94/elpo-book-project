@@ -58,7 +58,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/app-info',
-      parentNavigatorKey: _rootNavigatorKey, // Shell 밖에서 띄우기
+      parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => const AppInfoView(),
     ),
   ],

@@ -13,6 +13,7 @@ class TimerViewModel extends ChangeNotifier {
   String get formattedSystemDefault => _formatToKorean(_systemDefaultDuration);
 
   bool isRunning = false;
+  bool _isFirstLoad = true;
   Timer? _ticker;
 
   bool _isEditing = false;
@@ -20,7 +21,7 @@ class TimerViewModel extends ChangeNotifier {
   bool get hasTarget => targetDuration > Duration.zero;
 
   TimerViewModel(this._timerservice) {
-    setupDuration();
+    setupDuration(isInitialBoot: true);
   }
 
   // ---------------------------------------------------------------------------
@@ -55,16 +56,21 @@ class TimerViewModel extends ChangeNotifier {
   // 2. 타이머 제어 및 데이터 관리
   // ---------------------------------------------------------------------------
 
-  Future<void> setupDuration() async {
+  Future<void> setupDuration({bool isInitialBoot = false}) async {
     final int systemDefault = await _timerservice.getSystemDefault();
     _systemDefaultDuration = Duration(seconds: systemDefault);
 
-    int? sessionTime = await _timerservice.getCurrentSession();
-
-    if (sessionTime != null) {
-      targetDuration = Duration(seconds: sessionTime);
-    } else {
+    if (isInitialBoot) {
       targetDuration = _systemDefaultDuration;
+      _isFirstLoad = false;
+    }
+    else {
+      int? sessionTime = await _timerservice.getCurrentSession();
+      if (sessionTime != null) {
+        targetDuration = Duration(seconds: sessionTime);
+      } else {
+        targetDuration = _systemDefaultDuration;
+      }
     }
 
     remaining = targetDuration;

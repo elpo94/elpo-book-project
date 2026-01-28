@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sabujak_application/views/schedule/widgets/calender_legend.dart';
 import '../project/widgets/project_detail_view.dart';
 import 'widgets/calender_widget.dart';
@@ -20,12 +21,7 @@ class ScheduleView extends StatelessWidget {
         ScheduleItemList(
           onCardTap: (projectId) {
             if (projectId.isNotEmpty) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProjectDetailView(projectId: projectId),
-                ),
-              );
+              context.push('/project/$projectId');
             }
           },
         ),

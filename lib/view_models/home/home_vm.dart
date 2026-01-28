@@ -20,6 +20,7 @@ class HomeViewModel extends ChangeNotifier {
   HomeViewModel(this._projectStore) {
     _projectStore.addListener(_onStoreChanged);
     _loadAllData();
+    _initialize();
   }
 
   String get todayPlan => _todayPlan;
@@ -31,11 +32,13 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<void> _initialize() async {
-    final String? uid = _authService.currentUserId;
-
-    if (uid != null && uid.isNotEmpty) {
-      await _projectStore.fetchAndStore(uid);
-      _loadAllData();
+    try {
+      final String? uid = _authService.currentUserId;
+      if (uid != null && uid.isNotEmpty && _projectStore.projects.isEmpty) {
+        await _projectStore.fetchAndStore(uid);
+      }
+    } catch (e) {
+      debugPrint("HomeViewModel 초기화 오류: $e");
     }
   }
 

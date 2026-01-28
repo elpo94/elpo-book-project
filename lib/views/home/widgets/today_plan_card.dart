@@ -11,62 +11,55 @@ class TodayPlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = context.watch<HomeViewModel>();
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.border, width: 0.8),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
+    return InkWell(
+      onTap: () => showTodayPlanEditSheet(context,vm),
+      borderRadius: BorderRadius.circular(24),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: AppColors.border, width: 0.8),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      vm.todayPlan,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  _buildTimeBadge("${vm.targetTime}분"),
+                ],
+              ),
+              if (vm.planMemo.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.background.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                   child: Text(
-                    vm.todayPlan,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.foreground,
+                    vm.planMemo,
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.foreground,
+                        height: 1.5
                     ),
                   ),
                 ),
-                IconButton(
-                  visualDensity: VisualDensity.compact,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: () => showTodayPlanEditSheet(context, vm),
-                  icon: Icon(Icons.edit_outlined,
-                      size: 18,
-                      color: AppColors.mutedOn.withOpacity(0.5)),
-                ),
               ],
-            ),
-            const SizedBox(height: 8),
-            _buildTimeBadge("${vm.targetTime}분"),
-            if (vm.planMemo.isNotEmpty) ...[
-              const SizedBox(height: 16),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.background.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Text(
-                  vm.planMemo,
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.foreground.withOpacity(0.7),
-                      height: 1.5
-                  ),
-                ),
-              ),
             ],
-          ],
+          ),
         ),
       ),
     );

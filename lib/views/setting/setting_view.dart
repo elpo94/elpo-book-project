@@ -6,22 +6,35 @@ import 'widgets/info_setting_card.dart';
 import 'widgets/notification_setting_card.dart';
 
 class SettingView extends StatelessWidget {
+  static const double defaultPadding = 20.0;
+  static const double cardMargin = 16.0;
   const SettingView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-      children: const [
-        PlanSettingCard(),
-        SizedBox(height: 18),
-        NotificationSettingCard(),
-        SizedBox(height: 18),
-        DataSettingCard(),
-        SizedBox(height: 18),
-        InfoSettingCard(),
-        SizedBox(height: 22),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: defaultPadding,
+                vertical: cardMargin,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  PlanSettingCard(),
+                  NotificationSettingCard(),
+                  DataSettingCard(),
+                  InfoSettingCard(),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

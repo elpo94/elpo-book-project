@@ -33,8 +33,12 @@ class _TimerSettingSheetState extends State<TimerSettingSheet> {
     // 초기값 주입 (0:0:0 방지)
     _tempDuration = widget.initialDuration;
     _hCtrl = FixedExtentScrollController(initialItem: _tempDuration.inHours);
-    _mCtrl = FixedExtentScrollController(initialItem: _tempDuration.inMinutes.remainder(60));
-    _sCtrl = FixedExtentScrollController(initialItem: _tempDuration.inSeconds.remainder(60));
+    _mCtrl = FixedExtentScrollController(
+      initialItem: _tempDuration.inMinutes.remainder(60),
+    );
+    _sCtrl = FixedExtentScrollController(
+      initialItem: _tempDuration.inSeconds.remainder(60),
+    );
   }
 
   @override
@@ -66,9 +70,21 @@ class _TimerSettingSheetState extends State<TimerSettingSheet> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _hCtrl.animateToItem(h, duration: const Duration(milliseconds: 180), curve: Curves.easeOut);
-      _mCtrl.animateToItem(m, duration: const Duration(milliseconds: 180), curve: Curves.easeOut);
-      _sCtrl.animateToItem(s, duration: const Duration(milliseconds: 180), curve: Curves.easeOut);
+      _hCtrl.animateToItem(
+        h,
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOut,
+      );
+      _mCtrl.animateToItem(
+        m,
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOut,
+      );
+      _sCtrl.animateToItem(
+        s,
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOut,
+      );
     });
   }
 
@@ -83,17 +99,29 @@ class _TimerSettingSheetState extends State<TimerSettingSheet> {
             useMagnifier: true,
             magnification: 1.1,
             onSelectedItemChanged: (_) => _onWheelChanged(),
-            children: List.generate(count, (i) => Center(
-              child: Text(
-                i.toString().padLeft(2, '0'),
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+            children: List.generate(
+              count,
+              (i) => Center(
+                child: Text(
+                  i.toString().padLeft(2, '0'),
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-            )),
+            ),
           ),
           // 단위 표시 (시, 분, 초)
           Positioned(
             right: 15,
-            child: Text(unit, style: TextStyle(color: AppColors.foreground.withOpacity(0.5), fontSize: 13)),
+            child: Text(
+              unit,
+              style: TextStyle(
+                color: AppColors.foreground.withOpacity(0.5),
+                fontSize: 13,
+              ),
+            ),
           ),
         ],
       ),
@@ -127,9 +155,19 @@ class _TimerSettingSheetState extends State<TimerSettingSheet> {
           child: Column(
             children: [
               const SizedBox(height: 8),
-              Container(width: 44, height: 5, decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(999))),
+              Container(
+                width: 44,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
               const SizedBox(height: 12),
-              const Text('타이머 설정', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+              const Text(
+                '타이머 설정',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+              ),
 
               Expanded(
                 child: Padding(
@@ -147,9 +185,18 @@ class _TimerSettingSheetState extends State<TimerSettingSheet> {
               Wrap(
                 spacing: 10,
                 children: [
-                  _PresetChip('10분', () => _setDuration(const Duration(minutes: 10))),
-                  _PresetChip('15분', () => _setDuration(const Duration(minutes: 15))),
-                  _PresetChip('30분', () => _setDuration(const Duration(minutes: 30))),
+                  _PresetChip(
+                    '10분',
+                    () => _setDuration(const Duration(minutes: 10)),
+                  ),
+                  _PresetChip(
+                    '15분',
+                    () => _setDuration(const Duration(minutes: 15)),
+                  ),
+                  _PresetChip(
+                    '30분',
+                    () => _setDuration(const Duration(minutes: 30)),
+                  ),
                 ],
               ),
 
@@ -157,11 +204,18 @@ class _TimerSettingSheetState extends State<TimerSettingSheet> {
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
                 child: Row(
                   children: [
-                    Expanded(child: OutlinedButton(onPressed: widget.onCancel, child: const Text('취소'))),
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: widget.onCancel,
+                        child: const Text('취소'),
+                      ),
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: FilledButton(
-                        onPressed: _tempDuration == Duration.zero ? null : () => widget.onConfirm(_tempDuration),
+                        onPressed: _tempDuration == Duration.zero
+                            ? null
+                            : () => widget.onConfirm(_tempDuration),
                         child: const Text('설정'),
                       ),
                     ),
@@ -184,7 +238,10 @@ class _PresetChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ActionChip(
-      label: Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+      label: Text(
+        label,
+        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+      ),
       onPressed: onTap,
       padding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,

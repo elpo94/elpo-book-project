@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../theme/app_colors.dart';
 import 'app_info_view.dart';
 import 'setting_card.dart';
@@ -23,11 +24,7 @@ class InfoSettingCard extends StatelessWidget {
               subtitle: '버전 1.0.0',
               showChevron: true, // 상세 페이지가 있으니 쉐브론을 켜주는 게 직관적입니다.
               onTap: () {
-                // ✅ 아까 만든 쉐브론/클로즈가 있는 페이지로 이동
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AppInfoView()),
-                );
+                context.push('/app-info');
               },
             ),
           ],
@@ -36,10 +33,7 @@ class InfoSettingCard extends StatelessWidget {
         Center(
           child: Text(
             'ⓒ 2026 사부작',
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.mutedOn,
-            ),
+            style: TextStyle(fontSize: 12, color: AppColors.mutedOn),
           ),
         ),
       ],

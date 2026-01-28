@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../theme/app_colors.dart';
 
 class AppInfoView extends StatelessWidget {
@@ -7,14 +8,13 @@ class AppInfoView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background, // 기존 테마 유지
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        // 안드로이드 친화적인 쉐브론 레프트 뒤로가기
         leading: IconButton(
           icon: const Icon(Icons.chevron_left, color: AppColors.foreground, size: 30),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
         ),
         title: const Text(
           "앱 정보",

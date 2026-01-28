@@ -5,7 +5,7 @@ import '../../../view_models/schedule/schedule_vm.dart';
 import 'schedule_item_card.dart';
 
 class ScheduleItemList extends StatelessWidget {
-  // ✅ 1. 외부(ScheduleView)에서 클릭 시 동작을 정의할 수 있게 인자를 추가합니다.
+
   final Function(String projectId) onCardTap;
 
   const ScheduleItemList({
@@ -25,7 +25,15 @@ class ScheduleItemList extends StatelessWidget {
     return Column(
       children: [
         for (final item in items) ...[
-          ScheduleItemCard(item: item),
+          ScheduleItemCard(
+            item: item,
+            onTap: () {
+              final id = item.projectId;
+              if (id != null) {
+                onCardTap(id);
+              }
+            },
+          ),
           const SizedBox(height: 10),
         ],
       ],
