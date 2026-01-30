@@ -12,6 +12,8 @@ class TimerViewModel extends ChangeNotifier {
   Duration get systemDefaultDuration => _systemDefaultDuration;
   String get formattedSystemDefault => _formatToKorean(_systemDefaultDuration);
 
+  bool _isFinished = false;
+  bool get isFinished => _isFinished;
   bool isRunning = false;
   bool _isFirstLoad = true;
   Timer? _ticker;
@@ -105,6 +107,7 @@ class TimerViewModel extends ChangeNotifier {
     if (isRunning || remaining <= Duration.zero) return;
 
     isRunning = true;
+    _isFinished = false;
     notifyListeners();
 
     _ticker?.cancel();
@@ -113,7 +116,11 @@ class TimerViewModel extends ChangeNotifier {
 
       if (remaining <= const Duration(seconds: 1)) {
         remaining = Duration.zero;
+
+        _isFinished = true;
         stop();
+
+        notifyListeners();
         return;
       }
 
@@ -130,16 +137,24 @@ class TimerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+
   void reset() {
     stop();
+    targetDuration = Duration.zero;
     remaining = Duration.zero;
+    _isFinished = false;
     notifyListeners();
   }
 
-  //데이터 초기화 시 호출할 메서드
+  //신호소모
+  void clearFinishedFlag() {
+    _isFinished = false;
+  }
+
+  //데이터 초기화
   Future<void> resetToSystemDefault() async {
     stop();
-    await setupDuration(isInitialBoot: true); // 기본값으로 재설정 및 리스너 호출
+    await setupDuration(isInitialBoot: true);
   }
 
   @override

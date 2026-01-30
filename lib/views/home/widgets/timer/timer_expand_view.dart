@@ -64,6 +64,15 @@ class _TimerExpandViewState extends State<TimerExpandView> {
   Widget build(BuildContext context) {
     final vm = context.watch<TimerViewModel>();
 
+    if (vm.isFinished || (vm.hasTarget && vm.remaining.inSeconds == 0)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted && Navigator.canPop(context)) {
+          vm.clearFinishedFlag(); // 신호 소모
+          context.pop(); // 가로모드 탈출
+        }
+      });
+    }
+
     final display = vm.hasTarget ? vm.remaining : Duration.zero;
 
     return Scaffold(
@@ -73,7 +82,7 @@ class _TimerExpandViewState extends State<TimerExpandView> {
           children: [
             Center(
               child: Text(
-                _format(display),
+                _format(display), // "00:00:00" 표시
                 style: const TextStyle(
                   fontSize: 110,
                   fontWeight: FontWeight.w700,

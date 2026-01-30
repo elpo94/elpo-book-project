@@ -33,10 +33,14 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/icons/app_icon.png"
+  image_path: "assets/icons/sabujak.png"
+  adaptive_icon_background: "#F3EDE2"
+  adaptive_icon_foreground: "assets/icons/sabujak_clear.png"
 
 flutter:
   uses-material-design: true
+
+
 
 
   assets:
