@@ -24,7 +24,7 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final vm = context.read<ProjectCreateViewModel>();
-      if (widget.initialProject != null){
+      if (widget.initialProject != null) {
         vm.titleController.text = widget.initialProject!.name;
         vm.descriptionController.text = widget.initialProject!.description;
         vm.dailyGoalController.text = widget.initialProject!.plans.isNotEmpty
@@ -33,10 +33,12 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
         vm.memoController.text = widget.initialProject!.memo;
         vm.loadProjectDays(widget.initialProject!.selectedDays);
 
-        vm.setDateRange(DateTimeRange(
-          start: widget.initialProject!.startDate,
-          end: widget.initialProject!.endDate,
-        ));
+        vm.setDateRange(
+          DateTimeRange(
+            start: widget.initialProject!.startDate,
+            end: widget.initialProject!.endDate,
+          ),
+        );
       } else {
         vm.clearFields();
       }
@@ -64,7 +66,10 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
                 _buildCustomHeader(context, isEditMode), // ✅ 커스텀 헤더 호출
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(horizontal: hPadding, vertical: 10),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: hPadding,
+                      vertical: 10,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -110,7 +115,11 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
                     ),
                   ),
                 ),
-                _buildBottomActionButtons(context, vm, isEditMode), // ✅ 하단 버튼 호출
+                _buildBottomActionButtons(
+                  context,
+                  vm,
+                  isEditMode,
+                ), // ✅ 하단 버튼 호출
               ],
             ),
           ),
@@ -127,14 +136,22 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.chevron_left, color: AppColors.foreground, size: 30),
+            icon: const Icon(
+              Icons.chevron_left,
+              color: AppColors.foreground,
+              size: 30,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
           Expanded(
             child: Text(
               isEditMode ? "프로젝트 수정" : "사부작 사부작",
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: AppColors.foreground),
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+                color: AppColors.foreground,
+              ),
             ),
           ),
           const SizedBox(width: 48),
@@ -161,8 +178,19 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFFB58A53))),
-            if (isRequired) const Text(" *", style: TextStyle(color: AppColors.error, fontSize: 14)),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFFB58A53),
+              ),
+            ),
+            if (isRequired)
+              const Text(
+                " *",
+                style: TextStyle(color: AppColors.error, fontSize: 14),
+              ),
           ],
         ),
         const SizedBox(height: 8),
@@ -175,7 +203,9 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
           textInputAction: textInputAction,
           decoration: InputDecoration(hintText: hint),
           validator: (value) {
-            if (isRequired && (value == null || value.isEmpty)) return "$label을 입력해 주세요";
+            if (isRequired && (value == null || value.trim().isEmpty)) {
+              return "$label을 입력해 주세요";
+            }
             return null;
           },
         ),
@@ -190,7 +220,14 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("반복 요일", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFFB58A53))),
+        const Text(
+          "반복 요일",
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFFB58A53),
+          ),
+        ),
         const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -208,7 +245,10 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
                 ),
                 child: Text(
                   vm.days[index],
-                  style: TextStyle(color: isSelected ? Colors.white : const Color(0xFF5A4632), fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: isSelected ? Colors.white : const Color(0xFF5A4632),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             );
@@ -219,68 +259,115 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
   }
 
   // 4. 하단 액션 버튼
-  Widget _buildBottomActionButtons(BuildContext context, ProjectCreateViewModel vm, bool isEditMode) {
+  Widget _buildBottomActionButtons(
+    BuildContext context,
+    ProjectCreateViewModel vm,
+    bool isEditMode,
+  ) {
     return Container(
       color: AppColors.background,
       child: SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(24, 10, 24, 20),
-          child: Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () async {
-                    final bool confirm = await showConfirmDialog(context, title: "작성 취소", message: "작성 중인 내용이 저장되지 않습니다.");
-                    if (confirm == true && context.mounted) Navigator.pop(context);
-                  },
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: const BorderSide(color: Color(0xFFB58A53)),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.cloud_off, size: 14, color: Color(0xFFB58A53)),
+                  SizedBox(width: 6),
+                  Text(
+                    "오프라인 상태에서도 로컬에 저장 후 온라인 시 자동 연동됩니다.",
+                    style: TextStyle(fontSize: 11, color: Color(0xFFB58A53)),
                   ),
-                  child: const Text("취소", style: TextStyle(color: Color(0xFFB58A53))),
-                ),
+                ],
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      // 요일 미선택 시 자동 '매일' 처리
-                      if (!vm.selectedDays.contains(true)) {
-                        for (int i = 0; i < vm.selectedDays.length; i++) vm.selectedDays[i] = true;
-                      }
-
-                      if (isEditMode) {
-                        await context.read<ProjectViewModel>().updateProject(
-                          projectId: widget.initialProject!.id,
-                          name: vm.titleController.text,
-                          description: vm.descriptionController.text,
-                          startDate: vm.startDate ?? widget.initialProject!.startDate,
-                          endDate: vm.endDate ?? widget.initialProject!.endDate,
-                          plans: [vm.dailyGoalController.text],
-                          status: widget.initialProject!.status,
-                          memo: vm.memoController.text,
-                          selectedDays: List.from(vm.selectedDays),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () async {
+                        final bool confirm = await showConfirmDialog(
+                          context,
+                          title: "작성 취소",
+                          message: "작성 중인 내용이 저장되지 않습니다.",
                         );
-                      } else {
-                        final newProject = vm.createProjectModel();
-                        if (newProject != null) {
-                          await context.read<ProjectViewModel>().addProject(newProject);
-                          vm.clearFields();
-                        }
-                      }
-                      if (context.mounted) Navigator.pop(context);
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFB58A53),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        if (confirm == true && context.mounted)
+                          Navigator.pop(context);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        side: const BorderSide(color: Color(0xFFB58A53)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        "취소",
+                        style: TextStyle(color: Color(0xFFB58A53)),
+                      ),
+                    ),
                   ),
-                  child: Text(isEditMode ? "수정 완료" : "저장하기", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          if (!vm.selectedDays.contains(true)) {
+                            for (int i = 0; i < vm.selectedDays.length; i++)
+                              vm.selectedDays[i] = true;
+                          }
+
+                          if (isEditMode) {
+                            await context
+                                .read<ProjectViewModel>()
+                                .updateProject(
+                                  projectId: widget.initialProject!.id,
+                                  name: vm.titleController.text,
+                                  description: vm.descriptionController.text,
+                                  startDate:
+                                      vm.startDate ??
+                                      widget.initialProject!.startDate,
+                                  endDate:
+                                      vm.endDate ??
+                                      widget.initialProject!.endDate,
+                                  plans: [vm.dailyGoalController.text],
+                                  status: widget.initialProject!.status,
+                                  memo: vm.memoController.text,
+                                  selectedDays: List.from(vm.selectedDays),
+                                );
+                          } else {
+                            final newProject = vm.createProjectModel();
+                            if (newProject != null) {
+                              await context.read<ProjectViewModel>().addProject(
+                                newProject,
+                              );
+                              vm.clearFields();
+                            }
+                          }
+                          if (context.mounted) Navigator.pop(context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFB58A53),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        isEditMode ? "수정 완료" : "저장하기",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

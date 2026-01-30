@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -7,6 +8,7 @@ import '../../services/project_service.dart'; // 중복 해결된 깨끗한 서�
 import '../../services/project_store.dart';
 import '../../services/auth_service.dart';   // 방금 정리한 인증 서비스
 import '../../views/project/widgets/project_status.dart';
+import '../../widgets/confirm_dialog.dart';
 
 class ProjectViewModel extends ChangeNotifier {
   final ProjectService _projectService = ProjectService();
@@ -68,6 +70,48 @@ class ProjectViewModel extends ChangeNotifier {
       _setLoading(false);
     }
   }
+
+  Future<bool> _checkOnline(BuildContext context) async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult.contains(ConnectivityResult.none)) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("현재 오프라인 상태입니다. 온라인 환경에서 시도해 주세요."),
+            backgroundColor: Color(0xFFD65C5C),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+      return false;
+    }
+    return true;
+  }
+
+
+  Future<void> requestDeleteProject(BuildContext context, String projectId) async {
+    if (!await _checkOnline(context)) return;
+
+    if (context.mounted) {
+      final bool confirm = await showConfirmDialog(
+        context,
+        title: "프로젝트 삭제",
+        message: "이 프로젝트를 영구적으로 삭제하시겠습니까?",
+        confirmText: "삭제",
+        confirmColor: const Color(0xFFD65C5C),
+      );
+
+      if (confirm == true) {
+        await deleteProject(projectId); 
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("프로젝트가 정상적으로 삭제되었습니다.")),
+          );
+        }
+      }
+    }
+  }
+
 
   // 3. 전체 수정: updateProject 활용
   Future<void> updateProject({

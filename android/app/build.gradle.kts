@@ -15,7 +15,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.example.sabujak_application"
+    namespace = "com.elpo.sabujak"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -52,7 +52,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.sabujak_application"
+        applicationId = "com.elpo.sabujak"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

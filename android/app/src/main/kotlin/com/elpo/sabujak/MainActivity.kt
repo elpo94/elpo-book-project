@@ -1,4 +1,4 @@
-package com.example.sabujak_application
+package com.elpo.sabujak
 
 import io.flutter.embedding.android.FlutterActivity
 

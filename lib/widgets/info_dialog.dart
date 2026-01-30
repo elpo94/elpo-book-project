@@ -9,7 +9,7 @@ Future<void> showInfoDialog(
   await showDialog<void>(
     context: context,
     useRootNavigator: true,
-    barrierDismissible: true,
+    barrierDismissible: false,
     builder: (dialogContext) => AlertDialog(
       backgroundColor: const Color(0xFFFFF8EE),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -35,7 +35,7 @@ Future<void> showInfoDialog(
           width: double.infinity,
           child: FilledButton(
             onPressed: () =>
-                Navigator.of(dialogContext, rootNavigator: true).pop(), // ✅
+                Navigator.of(dialogContext, rootNavigator: true).pop(),
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 14),
               backgroundColor: const Color(0xFFB58A53),

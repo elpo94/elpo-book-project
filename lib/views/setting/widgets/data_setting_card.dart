@@ -1,6 +1,6 @@
-// lib/views/setting/widgets/data_setting_card.dart
-
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sabujak_application/views/setting/widgets/setting_card.dart';
 import 'package:sabujak_application/views/setting/widgets/setting_section_title.dart';
@@ -37,42 +37,37 @@ class DataSettingCard extends StatelessWidget {
         ),
       ],
     );
-    // return Container(
-    //   margin: const EdgeInsets.only(bottom: 16),
-    //   decoration: BoxDecoration(
-    //     color: const Color(0xFFF3EDE2),
-    //     borderRadius: BorderRadius.circular(20),
-    //   ),
-    //   child: ListTile(
-    //     contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-    //     leading: const Icon(Icons.delete_sweep_outlined, color: Color(0xFFD65C5C)),
-    //     title: const Text(
-    //       "데이터 초기화",
-    //       style: TextStyle(color: Color(0xFFD65C5C), fontWeight: FontWeight.bold),
-    //     ),
-    //     subtitle: const Text("모든 데이터를 사부작히 삭제합니다"),
-    //     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-    //     onTap: () => _handleResetProcess(context),
-    //   ),
-    // );
   }
 
-  // ✅ 통합 초기화 프로세스
   Future<void> _handleResetProcess(BuildContext context) async {
-    // 1️⃣ 커스텀 확인 다이얼로그 호출
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult.contains(ConnectivityResult.none)) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("현재 오프라인 상태입니다. 온라인 환경에서 다시 시도해 주세요."),
+            backgroundColor: Color(0xFFD65C5C),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+      return;
+    }
+
     final bool confirm = await showConfirmDialog(
       context,
       title: "데이터 초기화",
-      message: "저장된 데이터가 영구적으로 삭제됩니다.\n정말로 초기화를 진행하시겠습니까?",
+      message: "모든 데이터가 영구적으로 삭제됩니다.\n정말로 초기화를 진행하시겠습니까?",
       confirmText: "초기화",
       confirmColor: const Color(0xFFD65C5C),
     );
 
     if (!confirm) return;
 
-    // 2️⃣ 로딩 및 초기화 로직 실행
     if (context.mounted) {
-      final uid = context.read<AuthService>().currentUserId;
+      final uid = context
+          .read<AuthService>()
+          .currentUserId;
       if (uid == null) return;
 
       try {
@@ -80,16 +75,18 @@ class DataSettingCard extends StatelessWidget {
 
         if (context.mounted) {
           context.read<HomeViewModel>().resetToDefault();
-
           await context.read<TimerViewModel>().resetToSystemDefault();
 
-          // 3️⃣ 완료 정보 다이얼로그 호출
           if (context.mounted) {
             await showInfoDialog(
               context,
               title: "초기화 완료",
               message: "모든 데이터가 깔끔하게 정리되었습니다.",
             );
+
+            if (context.mounted) {
+              context.go('/home');
+            }
           }
         }
       } catch (e) {

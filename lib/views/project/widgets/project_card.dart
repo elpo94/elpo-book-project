@@ -49,13 +49,12 @@ class ProjectCard extends StatelessWidget {
           ),
         ),
 
-        // 우측 하단 삭제 버튼 (디테일은 유지하되 로직만 외부로 위임)
         Positioned(
           right: 12,
           bottom: 12,
           child: IconButton(
             icon: Icon(
-              Icons.delete_outline, // 요청하신 기본 휴지통 아이콘
+              Icons.delete_outline,
               color: Colors.black.withOpacity(0.3),
               size: 22,
             ),

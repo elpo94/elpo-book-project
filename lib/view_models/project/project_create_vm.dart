@@ -47,21 +47,20 @@ class ProjectCreateViewModel extends ChangeNotifier {
   // 4. 프로젝트 모델 생성 (핵심 로직 통합)
   ProjectModel? createProjectModel() {
     ensureDaysSelected();
-
-    if (titleController.text.isEmpty || _startDate == null || _endDate == null) {
+    if (titleController.text.trim().isEmpty || _startDate == null || _endDate == null) {
       return null;
     }
 
     return ProjectModel(
-      id: '', // Firestore 저장 시 생성됨
-      name: titleController.text,
+      id: '',
+      name: titleController.text.trim(),
       description: descriptionController.text,
       startDate: _startDate!,
       endDate: _endDate!,
-      selectedDays: List.from(selectedDays), // 🔴 추가된 요일 데이터
+      selectedDays: List.from(selectedDays),
       plans: [dailyGoalController.text],
-      status: ProjectStatus.planned, // 'upcoming' 대신 모델의 'planned' 사용
-      createdAt: DateTime.now(),    // 🔴 필수 생성일자 추가
+      status: ProjectStatus.planned,
+      createdAt: DateTime.now(),
       memo: memoController.text,
       isFavorite: false,
     );
