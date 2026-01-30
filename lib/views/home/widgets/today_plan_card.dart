@@ -11,8 +11,12 @@ class TodayPlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = context.watch<HomeViewModel>();
 
+    final String displayPlan = vm.todayPlan.isEmpty
+        ? "오늘은 어떤 멋진 일이 일어날까요?"
+        : vm.todayPlan;
+
     return InkWell(
-      onTap: () => showTodayPlanEditSheet(context,vm),
+      onTap: () => showTodayPlanEditSheet(context, vm),
       borderRadius: BorderRadius.circular(24),
       child: Container(
         decoration: BoxDecoration(
@@ -31,8 +35,15 @@ class TodayPlanCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      vm.todayPlan,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                      displayPlan,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                        color: vm.todayPlan.isEmpty
+                            ? AppColors.foreground.withValues(alpha: 0.5)
+                            : AppColors.foreground,
+                        letterSpacing: -0.5,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -51,9 +62,9 @@ class TodayPlanCard extends StatelessWidget {
                   child: Text(
                     vm.planMemo,
                     style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.foreground,
-                        height: 1.5
+                      fontSize: 14,
+                      color: AppColors.foreground,
+                      height: 1.5,
                     ),
                   ),
                 ),
@@ -75,9 +86,9 @@ class TodayPlanCard extends StatelessWidget {
       child: Text(
         label,
         style: const TextStyle(
-            color: Colors.white,
-            fontSize: 11,
-            fontWeight: FontWeight.bold
+          color: Colors.white,
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );

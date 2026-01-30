@@ -9,9 +9,8 @@ import '../../services/auth_service.dart';   // 방금 정리한 인증 서비�
 import '../../views/project/widgets/project_status.dart';
 
 class ProjectViewModel extends ChangeNotifier {
-  // ✅ 빨간 줄 해결: 클래스들이 위 임포트를 통해 인식됩니다.
   final ProjectService _projectService = ProjectService();
-  final ProjectStore _projectStore; // 생성자에서 주입받음
+  final ProjectStore _projectStore;
   final AuthService _authService = AuthService();
 
   bool _isLoading = false;
@@ -20,9 +19,19 @@ class ProjectViewModel extends ChangeNotifier {
   List<ProjectModel> get projects => _projectStore.projects;
   bool get isLoading => _isLoading;
 
-  // 생성자: 'this._projectStore' 에러 해결
   ProjectViewModel(this._projectStore) {
+    _projectStore.addListener(_onStoreChanged);
     fetchProjects();
+  }
+
+  void _onStoreChanged() {
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _projectStore.removeListener(_onStoreChanged);
+    super.dispose();
   }
   void _setLoading(bool value) {
     _isLoading = value;

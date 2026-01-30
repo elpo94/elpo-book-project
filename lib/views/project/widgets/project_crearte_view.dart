@@ -3,10 +3,8 @@ import 'package:provider/provider.dart';
 import '../../../models/project.dart';
 import '../../../view_models/project/project_create_vm.dart';
 import '../../../view_models/project/project_vm.dart';
-import '../../../widgets/app_button_style.dart';
-import '../../../widgets/button_style.dart';
-import '../../../widgets/confirm_dialog.dart';
 import '../widgets/project_date_picker.dart';
+import '../../../widgets/confirm_dialog.dart';
 import '../../../theme/app_colors.dart';
 
 class ProjectCreateView extends StatefulWidget {
@@ -57,77 +55,95 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
       child: Scaffold(
         backgroundColor: AppColors.background,
         resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.chevron_left, color: AppColors.foreground),
-            onPressed: () => Navigator.pop(context),
-          ),
-          title: Text(isEditMode ? "프로젝트 수정" : "사부작 사부작"),
-          centerTitle: true,
-        ),
-        body: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(horizontal: hPadding, vertical: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildLabelField(
-                        label: "이름",
-                        controller: vm.titleController,
-                        hint: "예: 소설 1부 집필",
-                        isRequired: true,
-                        maxLength: 15,
-                      ),
-                      const SizedBox(height: 24),
-                      _buildLabelField(
-                        label: "설명",
-                        controller: vm.descriptionController,
-                        hint: "어떤 이야기인가요?",
-                        isMultiLine: true,
-                        maxLength: 50,
-                      ),
-                      const SizedBox(height: 24),
-                      _buildLabelField(
-                        label: "기간",
-                        controller: vm.periodController,
-                        hint: "날짜를 선택하세요",
-                        readOnly: true,
-                        isRequired: true,
-                        onTap: () async {
-                          final range = await showAppDateRangePicker(context);
-                          if (range != null) vm.setDateRange(range);
-                        },
-                      ),
-                      const SizedBox(height: 24),
-                      _buildLabelField(
-                        label: "목표",
-                        controller: vm.dailyGoalController,
-                        hint: "예: 하루 3시간 / 2,000자",
-                        textInputAction: TextInputAction.done,
-                        maxLength: 30,
-                      ),
-                      const SizedBox(height: 24),
-                      // ✅ 요일 선택 섹션 (별표 제거)
-                      _buildDaySelector(vm, screenWidth),
-                      const SizedBox(height: 100),
-                    ],
+        appBar: null, // ✅ 상태바 침범 해결을 위해 AppBar 제거
+        body: SafeArea(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                _buildCustomHeader(context, isEditMode), // ✅ 커스텀 헤더 호출
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: hPadding, vertical: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildLabelField(
+                          label: "이름",
+                          controller: vm.titleController,
+                          hint: "예: 소설 1부 집필",
+                          isRequired: true,
+                          maxLength: 15,
+                        ),
+                        const SizedBox(height: 24),
+                        _buildLabelField(
+                          label: "설명",
+                          controller: vm.descriptionController,
+                          hint: "어떤 이야기인가요?",
+                          isMultiLine: true,
+                          maxLength: 50,
+                        ),
+                        const SizedBox(height: 24),
+                        _buildLabelField(
+                          label: "기간",
+                          controller: vm.periodController,
+                          hint: "날짜를 선택하세요",
+                          readOnly: true,
+                          isRequired: true,
+                          onTap: () async {
+                            final range = await showAppDateRangePicker(context);
+                            if (range != null) vm.setDateRange(range);
+                          },
+                        ),
+                        const SizedBox(height: 24),
+                        _buildLabelField(
+                          label: "목표",
+                          controller: vm.dailyGoalController,
+                          hint: "예: 하루 3시간 / 2,000자",
+                          textInputAction: TextInputAction.done,
+                          maxLength: 30,
+                        ),
+                        const SizedBox(height: 24),
+                        _buildDaySelector(vm, screenWidth),
+                        const SizedBox(height: 40),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              _buildBottomActionButtons(context, vm, isEditMode),
-            ],
+                _buildBottomActionButtons(context, vm, isEditMode), // ✅ 하단 버튼 호출
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
+  // 1. 상단 커스텀 헤더
+  Widget _buildCustomHeader(BuildContext context, bool isEditMode) {
+    return Container(
+      height: 56,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.chevron_left, color: AppColors.foreground, size: 30),
+            onPressed: () => Navigator.pop(context),
+          ),
+          Expanded(
+            child: Text(
+              isEditMode ? "프로젝트 수정" : "사부작 사부작",
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: AppColors.foreground),
+            ),
+          ),
+          const SizedBox(width: 48),
+        ],
+      ),
+    );
+  }
+
+  // 2. 입력 필드 라벨 및 텍스트 폼
   Widget _buildLabelField({
     required String label,
     required TextEditingController controller,
@@ -159,9 +175,7 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
           textInputAction: textInputAction,
           decoration: InputDecoration(hintText: hint),
           validator: (value) {
-            if (isRequired && (value == null || value.isEmpty)) {
-              return "$label을 입력해 주세요";
-            }
+            if (isRequired && (value == null || value.isEmpty)) return "$label을 입력해 주세요";
             return null;
           },
         ),
@@ -169,6 +183,7 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
     );
   }
 
+  // 3. 요일 선택 섹션
   Widget _buildDaySelector(ProjectCreateViewModel vm, double screenWidth) {
     double itemSize = (screenWidth - 120) / 7;
     if (itemSize > 45) itemSize = 45;
@@ -203,6 +218,7 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
     );
   }
 
+  // 4. 하단 액션 버튼
   Widget _buildBottomActionButtons(BuildContext context, ProjectCreateViewModel vm, bool isEditMode) {
     return Container(
       color: AppColors.background,
@@ -213,59 +229,57 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
           child: Row(
             children: [
               Expanded(
-                child: AppActionButton(
-                  label: "취소",
-                  style: AppButtonStyle.outline,
+                child: OutlinedButton(
                   onPressed: () async {
                     final bool confirm = await showConfirmDialog(context, title: "작성 취소", message: "작성 중인 내용이 저장되지 않습니다.");
                     if (confirm == true && context.mounted) Navigator.pop(context);
                   },
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    side: const BorderSide(color: Color(0xFFB58A53)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text("취소", style: TextStyle(color: Color(0xFFB58A53))),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: AppActionButton(
-                  label: isEditMode ? "수정 완료" : "저장하기",
-                  style: AppButtonStyle.primary,
+                child: ElevatedButton(
                   onPressed: () async {
-                    // 1. 이름과 기간 필수 검증 (Form Validator 활용)
-                    final bool isFormValid = _formKey.currentState?.validate() ?? false;
-
-                    if (isFormValid) {
-                      try {
-                        // 2. 요일 미선택 시 자동 '매일' 처리 로직 (핵심)
-                        if (!vm.selectedDays.contains(true)) {
-                          for (int i = 0; i < vm.selectedDays.length; i++) {
-                            vm.selectedDays[i] = true; // 화면상에서도 전체 선택으로 시각화
-                          }
-                        }
-
-                        if (isEditMode) {
-                          await context.read<ProjectViewModel>().updateProject(
-                            projectId: widget.initialProject!.id,
-                            name: vm.titleController.text,
-                            description: vm.descriptionController.text,
-                            startDate: vm.startDate ?? widget.initialProject!.startDate,
-                            endDate: vm.endDate ?? widget.initialProject!.endDate,
-                            plans: [vm.dailyGoalController.text],
-                            status: widget.initialProject!.status,
-                            memo: vm.memoController.text,
-                            selectedDays: List.from(vm.selectedDays), // ✅ 요일 데이터 명시적 전달
-                          );
-                        } else {
-                          // createProjectModel() 내부에서 이미 보정 로직이 돌아가도록 VM과 협의됨
-                          final newProject = vm.createProjectModel();
-                          if (newProject != null) {
-                            await context.read<ProjectViewModel>().addProject(newProject);
-                            vm.clearFields();
-                          }
-                        }
-                        if (context.mounted) Navigator.pop(context);
-                      } catch (e) {
-                        debugPrint("처리 중 에러 발생: $e");
+                    if (_formKey.currentState?.validate() ?? false) {
+                      // 요일 미선택 시 자동 '매일' 처리
+                      if (!vm.selectedDays.contains(true)) {
+                        for (int i = 0; i < vm.selectedDays.length; i++) vm.selectedDays[i] = true;
                       }
+
+                      if (isEditMode) {
+                        await context.read<ProjectViewModel>().updateProject(
+                          projectId: widget.initialProject!.id,
+                          name: vm.titleController.text,
+                          description: vm.descriptionController.text,
+                          startDate: vm.startDate ?? widget.initialProject!.startDate,
+                          endDate: vm.endDate ?? widget.initialProject!.endDate,
+                          plans: [vm.dailyGoalController.text],
+                          status: widget.initialProject!.status,
+                          memo: vm.memoController.text,
+                          selectedDays: List.from(vm.selectedDays),
+                        );
+                      } else {
+                        final newProject = vm.createProjectModel();
+                        if (newProject != null) {
+                          await context.read<ProjectViewModel>().addProject(newProject);
+                          vm.clearFields();
+                        }
+                      }
+                      if (context.mounted) Navigator.pop(context);
                     }
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFB58A53),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: Text(isEditMode ? "수정 완료" : "저장하기", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],

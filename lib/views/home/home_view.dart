@@ -25,14 +25,13 @@ class HomeView extends StatelessWidget {
         ),
         const SizedBox(height: 24),
 
-        const HomeSection(title: '오늘 목표', child: TodayPlanCard()),
+        const HomeSection(title: '오늘의 목표', child: TodayPlanCard()),
         const SizedBox(height: 24),
 
         HomeProjectSection(
           projects: projects,
           onProjectTap: (project) {
-            Navigator.push(
-              context,
+            Navigator.of(context, rootNavigator: true).push(
               MaterialPageRoute(
                 builder: (context) => ProjectDetailView(projectId: project.id),
               ),

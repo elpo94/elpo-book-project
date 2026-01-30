@@ -2,15 +2,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
-import 'package:sabujak_application/theme/app_colors.dart';
-import 'package:sabujak_application/services/auth_service.dart';
-import 'package:sabujak_application/services/project_store.dart';
+import 'package:sabujak_application/views/setting/widgets/setting_card.dart';
+import 'package:sabujak_application/views/setting/widgets/setting_section_title.dart';
+import 'package:sabujak_application/views/setting/widgets/setting_tile.dart';
+import '../../../services/auth_service.dart';
+import '../../../services/project_store.dart';
+import '../../../view_models/home/home_vm.dart';
+import '../../../view_models/home/timer_vm.dart';
 import '../../../widgets/confirm_dialog.dart';
-import 'setting_card.dart';
-import 'setting_section_title.dart';
-import 'setting_tile.dart';
-import 'package:sabujak_application/widgets/info_dialog.dart';
+import '../../../widgets/info_dialog.dart';
+
 
 class DataSettingCard extends StatelessWidget {
   const DataSettingCard({super.key});
@@ -20,58 +21,80 @@ class DataSettingCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SettingSectionTitle('데이터 관리'),
+        const SettingSectionTitle('데이터'),
         const SizedBox(height: 8),
         SettingCard(
           children: [
             SettingTile(
-              icon: Icons.delete_forever_rounded,
+              icon: Icons.delete_sweep_outlined,
+              iconColor: Colors.red,
               title: '데이터 초기화',
-              subtitle: '모든 데이터를 삭제',
               titleColor: Colors.red,
-              onTap: () async {
-                // 1️⃣ [Confirm] 정말 삭제할지 묻기
-                final bool ok = await showConfirmDialog(
-                  context,
-                  title: '데이터 초기화',
-                  message: '정말 모든 프로젝트와 설정 기록을 삭제할까요?\n이 작업은 되돌릴 수 없으며 앱이 초기화됩니다.',
-                  confirmText: '전체 삭제',
-                  confirmColor: const Color(0xFFD65C5C), // 삭제의 위험성을 알리는 레드톤
-                );
-
-                if (ok && context.mounted) {
-                  try {
-                    final uid = context.read<AuthService>().currentUserId;
-                    final store = context.read<ProjectStore>();
-
-                    if (uid != null) {
-                      // 실제 데이터 삭제 수행 (Service + Store + SharedPrefs)
-                      await store.clearAll(uid);
-
-                      if (context.mounted) {
-                        // 2️⃣ [Info] 삭제가 완료되었음을 알림
-                        await showInfoDialog(
-                          context,
-                          title: '초기화 완료',
-                          message: '모든 데이터가 사부작히 삭제되었습니다.\n새로운 마음으로 시작해 보세요!',
-                          confirmText: '확인',
-                        );
-
-                        // 3️⃣ [Redirect] 다이얼로그가 닫히면 홈으로 이동
-                        if (context.mounted) {
-                          context.go('/home');
-                        }
-                      }
-                    }
-                  } catch (e) {
-                    debugPrint("초기화 실패: $e");
-                  }
-                }
-              },
+              subtitle: "모든 데이터를 삭제합니다",
+              onTap: () => _handleResetProcess(context),
             ),
           ],
         ),
       ],
     );
+    // return Container(
+    //   margin: const EdgeInsets.only(bottom: 16),
+    //   decoration: BoxDecoration(
+    //     color: const Color(0xFFF3EDE2),
+    //     borderRadius: BorderRadius.circular(20),
+    //   ),
+    //   child: ListTile(
+    //     contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+    //     leading: const Icon(Icons.delete_sweep_outlined, color: Color(0xFFD65C5C)),
+    //     title: const Text(
+    //       "데이터 초기화",
+    //       style: TextStyle(color: Color(0xFFD65C5C), fontWeight: FontWeight.bold),
+    //     ),
+    //     subtitle: const Text("모든 데이터를 사부작히 삭제합니다"),
+    //     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+    //     onTap: () => _handleResetProcess(context),
+    //   ),
+    // );
+  }
+
+  // ✅ 통합 초기화 프로세스
+  Future<void> _handleResetProcess(BuildContext context) async {
+    // 1️⃣ 커스텀 확인 다이얼로그 호출
+    final bool confirm = await showConfirmDialog(
+      context,
+      title: "데이터 초기화",
+      message: "저장된 데이터가 영구적으로 삭제됩니다.\n정말로 초기화를 진행하시겠습니까?",
+      confirmText: "초기화",
+      confirmColor: const Color(0xFFD65C5C),
+    );
+
+    if (!confirm) return;
+
+    // 2️⃣ 로딩 및 초기화 로직 실행
+    if (context.mounted) {
+      final uid = context.read<AuthService>().currentUserId;
+      if (uid == null) return;
+
+      try {
+        await context.read<ProjectStore>().clearAll(uid);
+
+        if (context.mounted) {
+          context.read<HomeViewModel>().resetToDefault();
+
+          await context.read<TimerViewModel>().resetToSystemDefault();
+
+          // 3️⃣ 완료 정보 다이얼로그 호출
+          if (context.mounted) {
+            await showInfoDialog(
+              context,
+              title: "초기화 완료",
+              message: "모든 데이터가 깔끔하게 정리되었습니다.",
+            );
+          }
+        }
+      } catch (e) {
+        debugPrint("초기화 중 오류 발생: $e");
+      }
+    }
   }
 }

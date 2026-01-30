@@ -12,46 +12,22 @@ class HomeViewModel extends ChangeNotifier {
   final ProjectService _projectService = ProjectService();
   final AuthService _authService = AuthService();
 
-  String _todayPlan = "오늘의 목표를 설정하세요";
+  String _todayPlan = "";
   int _targetTime = 0;
   String _planMemo = "";
 
-  //
   HomeViewModel(this._projectStore) {
     _projectStore.addListener(_onStoreChanged);
     _loadAllData();
     _initialize();
   }
 
+  // ---------------------------------------------------------------------------
+  // 1. Getters
+  // ---------------------------------------------------------------------------
   String get todayPlan => _todayPlan;
   int get targetTime => _targetTime;
   String get planMemo => _planMemo;
-
-  void _onStoreChanged() {
-    notifyListeners();
-  }
-
-  Future<void> _initialize() async {
-    try {
-      final String? uid = _authService.currentUserId;
-      if (uid != null && uid.isNotEmpty && _projectStore.projects.isEmpty) {
-        await _projectStore.fetchAndStore(uid);
-      }
-    } catch (e) {
-      debugPrint("HomeViewModel 초기화 오류: $e");
-    }
-  }
-
-  void _onProjectStoreChanged() {
-    notifyListeners(); //
-  }
-
-  @override
-  void dispose() {
-    _projectStore.removeListener(_onProjectStoreChanged);
-    super.dispose();
-  }
-
 
   List<ProjectModel> get ongoingProjects {
     final now = DateTime.now();
@@ -67,16 +43,48 @@ class HomeViewModel extends ChangeNotifier {
     }).toList();
   }
 
-  // 모든 데이터 로드
+  // ---------------------------------------------------------------------------
+  // 2. 초기화 및 리스너 관리
+  // ---------------------------------------------------------------------------
+  void _onStoreChanged() {
+    notifyListeners();
+  }
+
+  Future<void> _initialize() async {
+    try {
+      final String? uid = _authService.currentUserId;
+      if (uid != null && uid.isNotEmpty && _projectStore.projects.isEmpty) {
+        await _projectStore.fetchAndStore(uid);
+      }
+    } catch (e) {
+      debugPrint("HomeViewModel 초기화 오류: $e");
+    }
+  }
+
+  void resetToDefault() {
+    _todayPlan = "";
+    _targetTime = 0;
+    _planMemo = "";
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _projectStore.removeListener(_onStoreChanged);
+    super.dispose();
+  }
+
+  // ---------------------------------------------------------------------------
+  // 3. 데이터 로드 및 저장 (SharedPreferences)
+  // ---------------------------------------------------------------------------
   Future<void> _loadAllData() async {
     final prefs = await SharedPreferences.getInstance();
-    _todayPlan = prefs.getString('today_plan') ?? "오늘의 목표를 설정하세요";
+    _todayPlan = prefs.getString('today_plan') ?? "";
     _targetTime = prefs.getInt('target_time') ?? 0;
     _planMemo = prefs.getString('plan_memo') ?? "";
     notifyListeners();
   }
 
-  // 통합 저장 로직
   Future<void> updateAllPlanData({
     required String plan,
     required int time,

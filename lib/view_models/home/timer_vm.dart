@@ -62,18 +62,21 @@ class TimerViewModel extends ChangeNotifier {
 
     if (isInitialBoot) {
       targetDuration = _systemDefaultDuration;
+      remaining = targetDuration;
       _isFirstLoad = false;
-    }
-    else {
+    } else {
       int? sessionTime = await _timerservice.getCurrentSession();
       if (sessionTime != null) {
         targetDuration = Duration(seconds: sessionTime);
       } else {
         targetDuration = _systemDefaultDuration;
       }
+
+      if (!isRunning && remaining > Duration.zero) {
+        remaining = targetDuration;
+      }
     }
 
-    remaining = targetDuration;
     notifyListeners();
   }
 
@@ -131,6 +134,12 @@ class TimerViewModel extends ChangeNotifier {
     stop();
     remaining = Duration.zero;
     notifyListeners();
+  }
+
+  //데이터 초기화 시 호출할 메서드
+  Future<void> resetToSystemDefault() async {
+    stop();
+    await setupDuration(isInitialBoot: true); // 기본값으로 재설정 및 리스너 호출
   }
 
   @override

@@ -8,6 +8,8 @@ import 'widgets/notification_setting_card.dart';
 class SettingView extends StatelessWidget {
   static const double defaultPadding = 20.0;
   static const double cardMargin = 16.0;
+  static const double sectionSpacing = 18.0;
+
   const SettingView({super.key});
 
   @override
@@ -23,11 +25,14 @@ class SettingView extends StatelessWidget {
                 vertical: cardMargin,
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: const [
                   PlanSettingCard(),
+                  SizedBox(height: sectionSpacing),
                   NotificationSettingCard(),
+                  SizedBox(height: sectionSpacing),
                   DataSettingCard(),
+                  SizedBox(height: sectionSpacing),
                   InfoSettingCard(),
                 ],
               ),
