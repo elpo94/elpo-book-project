@@ -28,7 +28,7 @@ class ProjectStore extends ChangeNotifier {
 
   //  3. 서버 데이터 가져오기 및 저장 통합 메소드
   Future<void> fetchAndStore(String uid) async {
-    if (uid.isEmpty) return; // UID가 없으면 실행 안 함
+    if (uid.isEmpty) return;
     try {
       await _service.fetchAndStore(this, uid: uid);
     } catch (e) {

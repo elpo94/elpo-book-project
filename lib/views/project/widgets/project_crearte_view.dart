@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../models/project.dart';
@@ -18,6 +19,7 @@ class ProjectCreateView extends StatefulWidget {
 
 class _ProjectCreateViewState extends State<ProjectCreateView> {
   final _formKey = GlobalKey<FormState>();
+  bool _isSaving = false; // 연타 방지 플래그 [cite: 2026-02-04]
 
   @override
   void initState() {
@@ -48,7 +50,10 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<ProjectCreateViewModel>();
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
     final double hPadding = screenWidth > 600 ? screenWidth * 0.07 : 24.0;
     final bool isEditMode = widget.initialProject != null;
 
@@ -203,7 +208,9 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
           textInputAction: textInputAction,
           decoration: InputDecoration(hintText: hint),
           validator: (value) {
-            if (isRequired && (value == null || value.trim().isEmpty)) {
+            if (isRequired && (value == null || value
+                .trim()
+                .isEmpty)) {
               return "$label을 입력해 주세요";
             }
             return null;
@@ -259,11 +266,9 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
   }
 
   // 4. 하단 액션 버튼
-  Widget _buildBottomActionButtons(
-    BuildContext context,
-    ProjectCreateViewModel vm,
-    bool isEditMode,
-  ) {
+  Widget _buildBottomActionButtons(BuildContext context,
+      ProjectCreateViewModel vm,
+      bool isEditMode,) {
     return Container(
       color: AppColors.background,
       child: SafeArea(
@@ -289,7 +294,9 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
                 children: [
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () async {
+                      onPressed: _isSaving
+                          ? null
+                          : () async {
                         final bool confirm = await showConfirmDialog(
                           context,
                           title: "작성 취소",
@@ -314,51 +321,47 @@ class _ProjectCreateViewState extends State<ProjectCreateView> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () async {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          if (!vm.selectedDays.contains(true)) {
-                            for (int i = 0; i < vm.selectedDays.length; i++)
-                              vm.selectedDays[i] = true;
-                          }
+                        onPressed: _isSaving ? null : () async {
+                          if (_formKey.currentState?.validate() ?? false) {
+                            // 1. 네트워크상태 확인
+                            final bool isOnline = await vm.checkConnection();
 
-                          if (isEditMode) {
-                            await context
-                                .read<ProjectViewModel>()
-                                .updateProject(
-                                  projectId: widget.initialProject!.id,
-                                  name: vm.titleController.text,
-                                  description: vm.descriptionController.text,
-                                  startDate:
-                                      vm.startDate ??
-                                      widget.initialProject!.startDate,
-                                  endDate:
-                                      vm.endDate ??
-                                      widget.initialProject!.endDate,
-                                  plans: [vm.dailyGoalController.text],
-                                  status: widget.initialProject!.status,
-                                  memo: vm.memoController.text,
-                                  selectedDays: List.from(vm.selectedDays),
-                                );
-                          } else {
-                            final newProject = vm.createProjectModel();
-                            if (newProject != null) {
-                              await context.read<ProjectViewModel>().addProject(
-                                newProject,
+                            // 2. 오프라인일 때만 스낵바 노출
+                            if (!isOnline && context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("오프라인 상태입니다. 나중에 동기화됩니다."),
+                                  duration: Duration(seconds: 2),
+                                ),
                               );
-                              vm.clearFields();
+                            }
+
+                            setState(() => _isSaving = true);
+                            try {
+                            } finally {
+                              if (mounted) setState(() => _isSaving = false);
                             }
                           }
-                          if (context.mounted) Navigator.pop(context);
-                        }
-                      },
+                        },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFB58A53),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
+                        disabledBackgroundColor: const Color(
+                            0xFFDCC8B0),
                       ),
-                      child: Text(
+                      child: _isSaving
+                          ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                          : Text(
                         isEditMode ? "수정 완료" : "저장하기",
                         style: const TextStyle(
                           color: Colors.white,

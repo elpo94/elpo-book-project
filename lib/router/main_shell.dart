@@ -97,7 +97,7 @@ class _MainShellState extends State<MainShell> {
             type: BottomNavigationBarType.fixed,
             currentIndex: currentIndex,
             onTap: (index) {
-              // Shell 기능을 활용하여 탭 전환 (동일 탭 클릭 시 초기 위치 이동 처리)
+
               widget.navigationShell.goBranch(
                 index,
                 initialLocation: index == currentIndex,

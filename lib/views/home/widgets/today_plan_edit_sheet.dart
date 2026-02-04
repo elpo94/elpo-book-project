@@ -38,59 +38,68 @@ void showTodayPlanEditSheet(BuildContext context, HomeViewModel vm) {
                         width: 36, height: 4,
                         margin: const EdgeInsets.only(bottom: 24),
                         decoration: BoxDecoration(
-                          color: AppColors.mutedOn.withAlpha(50),
+                          color: AppColors.mutedOn.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
                     ),
 
                     _buildInputLabel("오늘의 목표"),
-                    _buildCompactTextField(planController, "예: 소설 1장 집필", maxLength: 30),
-                    const SizedBox(height: 16),
+                    _buildCompactTextField(
+                      planController,
+                      "예: 소설 1장 집필",
+                      maxLength: 30,
+                    ),
+                    const SizedBox(height: 20),
 
                     _buildInputLabel("목표 시간 (분)"),
                     TextField(
                       controller: timeController,
                       keyboardType: TextInputType.number,
                       onChanged: (value) => setModalState(() {}),
-                      style: const TextStyle(fontSize: 15),
+                      style: const TextStyle(fontSize: 15, color: AppColors.foreground),
                       decoration: InputDecoration(
                         hintText: "예: 60",
+                        hintStyle: TextStyle(color: AppColors.mutedOn.withValues(alpha: 0.5)),
                         filled: true,
                         fillColor: AppColors.surface,
                         errorText: (timeController.text.isNotEmpty && int.tryParse(timeController.text) == null)
                             ? "숫자만 가능해요"
                             : null,
-                        errorStyle: const TextStyle(height: 0.8, fontSize: 11),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        errorStyle: const TextStyle(height: 0.8, fontSize: 11, color: AppColors.error),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide.none
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
                       ),
                     ),
-                    const SizedBox(height: 16),
-
+                    const SizedBox(height: 20),
 
                     _buildInputLabel("메모"),
-                    _buildCompactTextField(memoController, "주의사항 등", maxLines: 2, maxLength: 50),
+                    _buildCompactTextField(
+                        memoController,
+                        "주의사항 등",
+                        maxLines: 3,
+                        maxLength: 50
+                    ),
                     const SizedBox(height: 28),
 
                     SizedBox(
                       width: double.infinity,
-                      height: 54,
+                      height: 56,
                       child: ElevatedButton(
-                        onPressed: () {
-                          vm.updateAllPlanData(
-                            plan: planController.text,
-                            time: int.tryParse(timeController.text) ?? 0,
-                            memo: memoController.text,
-                          );
-                          Navigator.pop(context);
-                        },
+                        onPressed: () { },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.buttonPrimaryBg,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          foregroundColor: AppColors.buttonPrimaryFg,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                           elevation: 0,
                         ),
-                        child: const Text("저장하기", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                        child: const Text(
+                            "저장하기",
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
+                        ),
                       ),
                     ),
                   ],

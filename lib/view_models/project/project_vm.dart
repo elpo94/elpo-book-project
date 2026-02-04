@@ -11,6 +11,7 @@ import '../../views/project/widgets/project_status.dart';
 import '../../widgets/confirm_dialog.dart';
 
 class ProjectViewModel extends ChangeNotifier {
+  //todo: jh service객체는 외부에서 주입
   final ProjectService _projectService = ProjectService();
   final ProjectStore _projectStore;
   final AuthService _authService = AuthService();
@@ -61,6 +62,7 @@ class ProjectViewModel extends ChangeNotifier {
     if (uid == null) return;
 
     _setLoading(true);
+    //todo: jh , error처리를 어떻게 할지 좀 더 고민.
     try {
       await _projectService.addProject(newProject, uid: uid);
       await fetchProjects();
@@ -73,16 +75,15 @@ class ProjectViewModel extends ChangeNotifier {
 
   Future<bool> _checkOnline(BuildContext context) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult.contains(ConnectivityResult.none)) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("현재 오프라인 상태입니다. 온라인 환경에서 시도해 주세요."),
-            backgroundColor: Color(0xFFD65C5C),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
+    if (connectivityResult.isEmpty || connectivityResult.contains(ConnectivityResult.none)) {
+      if (!context.mounted) return false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("현재 오프라인 상태입니다. 온라인 환경에서 시도해 주세요."),
+          backgroundColor: Color(0xFFD65C5C),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
       return false;
     }
     return true;

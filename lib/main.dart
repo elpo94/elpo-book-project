@@ -26,12 +26,21 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  final authService = AuthService();
-  await authService.signInAnonymously();
-  final settingService = SettingService();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
+
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.light,
+    systemNavigationBarColor: Colors.white,
+    systemNavigationBarIconBrightness: Brightness.dark,
+  ));
+
+  final authService = AuthService();
+  await authService.signInAnonymously();
+  final settingService = SettingService();
 
   runApp(
     MultiProvider(
@@ -42,6 +51,7 @@ void main() async {
         // 서류함
         ChangeNotifierProvider(create: (_) => ProjectStore()),
 
+        //todo: jh ProxyProvider사용법 잘못됐음.
         ChangeNotifierProxyProvider<ProjectStore, HomeViewModel>(
           create: (context) => HomeViewModel(context.read<ProjectStore>()),
           update: (context, store, previous) => previous ?? HomeViewModel(store),

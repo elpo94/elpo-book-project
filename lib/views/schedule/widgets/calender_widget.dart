@@ -34,20 +34,20 @@ class CalendarWidget extends StatelessWidget {
         focusedDay: vm.focusedDay,
         availableGestures: AvailableGestures.horizontalSwipe,
 
-        // ✅ 현재 선택된 날짜와 달력의 날짜가 같은지 비교
+        // 현재 선택된 날짜와 달력의 날짜가 같은지 비교
         selectedDayPredicate: (day) => isSameDay(vm.selectedDay, day),
 
-        // ✅ 날짜 선택 시 VM의 함수를 호출하여 상태를 업데이트
+        // 날짜 선택 시 VM의 함수를 호출하여 상태를 업데이트
         onDaySelected: (selectedDay, focusedDay) {
           vm.selectDay(selectedDay, focusedDay);
         },
 
-        // ✅ 페이지를 넘길 때도 포커스된 날짜를 동기화
+        // 페이지를 넘길 때도 포커스된 날짜를 동기화
         onPageChanged: (focusedDay) {
           vm.selectDay(vm.selectedDay, focusedDay);
         },
 
-        // ✅ VM의 itemsOf를 통해 각 날짜에 '점'을 찍을 데이터를 가져옴
+        // VM의 itemsOf를 통해 각 날짜에 '점'을 찍을 데이터를 가져옴
         eventLoader: vm.itemsOf,
 
         headerStyle: HeaderStyle(
@@ -62,6 +62,8 @@ class CalendarWidget extends StatelessWidget {
             color: AppColors.foreground,
           ),
         ),
+
+        daysOfWeekHeight: 35,
 
         daysOfWeekStyle: const DaysOfWeekStyle(
           weekdayStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),

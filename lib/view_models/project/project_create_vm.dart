@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../models/project.dart';
+import '../../services/network_service.dart';
 import '../../views/project/widgets/project_status.dart';
 
 class ProjectCreateViewModel extends ChangeNotifier {
@@ -9,6 +10,7 @@ class ProjectCreateViewModel extends ChangeNotifier {
   final dailyGoalController = TextEditingController();
   final periodController = TextEditingController();
   final memoController = TextEditingController();
+  final NetworkService _networkService = NetworkService();
 
   DateTime? _startDate;
   DateTime? _endDate;
@@ -18,6 +20,12 @@ class ProjectCreateViewModel extends ChangeNotifier {
 
   final List<bool> selectedDays = List.generate(7, (_) => false);
   final List<String> days = ['월', '화', '수', '목', '금', '토', '일'];
+
+  //네트워크 체크
+  Future<bool> checkConnection() async {
+    return await _networkService.isConnected();
+  }
+
 
   // 2. 날짜 범위 설정
   void setDateRange(DateTimeRange range) {
